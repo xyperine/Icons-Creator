@@ -1,4 +1,5 @@
-﻿using IconsCreationTool.Utility.Extensions;
+﻿using System;
+using IconsCreationTool.Utility.Extensions;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -53,6 +54,11 @@ namespace IconsCreatorNS
 
         public void SetData(GameObject targetObject, int resolution, float padding)
         {
+            if (resolution < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(resolution));
+            }
+            
             _targetObject = targetObject;
             _resolution = resolution;
             _padding = padding;
@@ -101,6 +107,11 @@ namespace IconsCreatorNS
 
         public Texture2D CaptureCameraView()
         {
+            if (_resolution < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(_resolution));
+            }
+            
             _camera.targetTexture = RenderTexture.GetTemporary(_resolution, _resolution);
             RenderTexture.active = _camera.targetTexture;
 

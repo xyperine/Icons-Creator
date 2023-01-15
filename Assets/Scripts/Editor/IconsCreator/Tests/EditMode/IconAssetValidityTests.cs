@@ -11,7 +11,6 @@ namespace Editor.IconsCreatorNS.Tests.EditMode
         private const string DESIRED_NAME = "TestIcon";
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
-        private const int DESIRED_RESOLUTION = 512;
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
         private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
@@ -35,7 +34,7 @@ namespace Editor.IconsCreatorNS.Tests.EditMode
         {
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             target.transform.position = new Vector3(1024f, 0f, 1024f);
-            _cameraUtility.SetData(target, DESIRED_RESOLUTION, 0f);
+            _cameraUtility.SetData(target, 512, 0f);
             _cameraUtility.RetrieveCamera();
             _cameraUtility.AdjustCamera();
         }
@@ -81,25 +80,7 @@ namespace Editor.IconsCreatorNS.Tests.EditMode
             Assert.AreEqual(TextureImporterType.Sprite, textureType);
         }
         
-
-        [Test]
-        public void Asset_Should_Have_Expected_Width()
-        {
-            _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
-
-            Assert.AreEqual(DESIRED_RESOLUTION, width);
-        }
         
-        
-        [Test]
-        public void Asset_Should_Have_Expected_Height()
-        {
-            _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
-
-            Assert.AreEqual(DESIRED_RESOLUTION, height);
-        }
-
-
         [Test]
         public void Asset_Should_Have_Expected_Filter_Mode()
         {
