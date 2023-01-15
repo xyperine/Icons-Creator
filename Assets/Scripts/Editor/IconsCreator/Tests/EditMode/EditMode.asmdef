@@ -1,6 +1,6 @@
 {
     "name": "EditMode",
-    "rootNamespace": "",
+    "rootNamespace": "IconsCreationTool",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",

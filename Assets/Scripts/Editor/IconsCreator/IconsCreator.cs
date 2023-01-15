@@ -2,8 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-// ReSharper disable once CheckNamespace
-namespace IconsCreatorNS
+namespace IconsCreationTool
 {
     public class IconsCreator
     {

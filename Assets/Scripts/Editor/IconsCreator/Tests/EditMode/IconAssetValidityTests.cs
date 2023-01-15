@@ -1,10 +1,8 @@
-using IconsCreatorNS;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-// ReSharper disable once CheckNamespace
-namespace Editor.IconsCreatorNS.Tests.EditMode
+namespace IconsCreationTool.Tests
 {
     public class IconAssetValidityTests
     {
