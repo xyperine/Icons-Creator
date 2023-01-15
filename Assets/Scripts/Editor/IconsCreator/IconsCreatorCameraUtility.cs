@@ -119,11 +119,14 @@ namespace IconsCreatorNS
 
         public IconsCreatorCameraUtilityDebugData GetDebugData()
         {
-            return new IconsCreatorCameraUtilityDebugData(
-                _targetObject,
-                _camera.transform.position,
-                _targetOrthographicBounds,
-                _targetOrthographicBounds.center);
+            bool ready = _targetObject && _camera;
+
+            if (!ready)
+            {
+                return default;
+            }
+
+            return new IconsCreatorCameraUtilityDebugData(true, _camera.transform.position, _targetOrthographicBounds);
         }
     }
 }

@@ -52,11 +52,11 @@ namespace IconsCreatorNS
             Object.DestroyImmediate(image);
 
             string path = Application.dataPath + DIRECTORY + _name + ".png";
-
             if (!Directory.Exists(Application.dataPath + DIRECTORY))
             {
                 Directory.CreateDirectory(Application.dataPath + DIRECTORY);
             }
+
             File.WriteAllBytes(path, bytes);
             AssetDatabase.Refresh();
 

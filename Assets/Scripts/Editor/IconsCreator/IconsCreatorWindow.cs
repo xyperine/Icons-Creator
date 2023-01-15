@@ -17,11 +17,13 @@ namespace IconsCreatorNS
         [SerializeField] private TextureImporterCompression compression = TextureImporterCompression.Compressed;
         [SerializeField] private FilterMode filterMode = FilterMode.Bilinear;
 
-        private bool _advancedUnfolded;
+        private const int PREVIEW_SIZE = 256;
         
         private static readonly IconsCreatorCameraUtility CameraUtility = new IconsCreatorCameraUtility();
         private readonly IconsCreator _iconsCreator = new IconsCreator(CameraUtility);
 
+        private bool _advancedUnfolded;
+        
         private Texture2D _previewTexture;
 
         #region --- Window name ---
@@ -46,45 +48,7 @@ namespace IconsCreatorNS
         private SerializedProperty _filterModeSerializedProperty;
         
         #endregion
-
-        #region --- Debug Gizmos ---
-
-        [DrawGizmo(GizmoType.Active)]
-        private static void DrawDebugGizmos(Transform component, GizmoType gizmoType)
-        {
-            if (CameraUtility == null)
-            {
-                return;
-            }
-
-            IconsCreatorCameraUtilityDebugData debugData = CameraUtility.GetDebugData();
-
-            if (!debugData.Ready)
-            {
-                return;
-            }
-            
-            Color centerColor = new Color(0.93f, 0.19f, 0.51f);
-            Color minColor = new Color(0.04f, 0.35f, 0.77f);
-            Color maxColor = new Color(1f, 0.42f, 0.18f);
-            
-            Handles.color = centerColor;
-            Vector3 normal = -SceneView.currentDrawingSceneView.camera.transform.forward;
-            Handles.DrawSolidDisc(debugData.TargetBoundsCenter, normal, 0.25f);
-            
-            Handles.DrawLine(debugData.CameraPosition, debugData.TargetBoundsCenter);
-
-            Bounds targetBounds = debugData.TargetBounds;
-            Handles.color = minColor;
-            Handles.DrawSolidDisc(targetBounds.min, normal, 0.2f);
-            Handles.color = maxColor;
-            Handles.DrawSolidDisc(targetBounds.max, normal, 0.2f);
-            Handles.color = Color.white;
-            Handles.DrawWireCube(targetBounds.center, targetBounds.size);
-        }
-
-        #endregion
-
+        
 
         [MenuItem(FULL_MENU_NAME)]
         private static void OpenWindow()
@@ -93,8 +57,8 @@ namespace IconsCreatorNS
             
             AddIconsCreationCameraTag();
         }
-
-
+        
+        
         private static void AddIconsCreationCameraTag()
         {
             if (!InternalEditorUtility.tags.Contains(CameraUtility.IconsCreationCameraTag))
@@ -114,6 +78,8 @@ namespace IconsCreatorNS
             CameraUtility.SetData(targetObject, resolution, padding);
             
             CameraUtility.RetrieveCamera();
+
+            SceneView.duringSceneGui += DrawDebugGizmos;
         }
 
 
@@ -143,6 +109,8 @@ namespace IconsCreatorNS
         private void OnDisable()
         {
             Save();
+            
+            SceneView.duringSceneGui -= DrawDebugGizmos;
         }
 
 
@@ -185,10 +153,29 @@ namespace IconsCreatorNS
 
             if (_serializedObject.ApplyModifiedProperties())
             {
-                _previewTexture = CameraUtility.CaptureCameraView();
+                UpdatePreviewTexture();
             }
-            
+
             DrawPreview();
+        }
+
+
+        private void UpdatePreviewTexture()
+        {
+            _previewTexture = CameraUtility.CaptureCameraView();
+            _previewTexture.filterMode = filterMode;
+            
+            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(PREVIEW_SIZE, PREVIEW_SIZE);
+            RenderTexture.active = temporaryRenderTexture;
+            
+            Graphics.Blit(_previewTexture, temporaryRenderTexture);
+            
+            _previewTexture.Reinitialize(PREVIEW_SIZE, PREVIEW_SIZE, _previewTexture.graphicsFormat, false);
+            _previewTexture.filterMode = filterMode;
+            _previewTexture.ReadPixels(new Rect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE), 0, 0);
+            _previewTexture.Apply();
+            
+            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
         }
 
 
@@ -252,15 +239,15 @@ namespace IconsCreatorNS
                         if (GUILayout.Button("Adjust Camera"))
                         {
                             CameraUtility.AdjustCamera();
-            
-                            _previewTexture = CameraUtility.CaptureCameraView();
+
+                            UpdatePreviewTexture();
                         }
 
                         if (GUILayout.Button("Create Icon"))
                         {
                             CameraUtility.AdjustCamera();
-                    
-                            _previewTexture = CameraUtility.CaptureCameraView();
+
+                            UpdatePreviewTexture();
                             _iconsCreator.CreateIcon();
                         }
                     }
@@ -292,5 +279,43 @@ namespace IconsCreatorNS
                 GUILayout.Box(_previewTexture, boxStyle, boxOptions);
             }
         }
+        
+        
+        #region --- Debug Gizmos ---
+        
+        private void DrawDebugGizmos(SceneView sceneView)
+        {
+            if (CameraUtility == null)
+            {
+                return;
+            }
+
+            IconsCreatorCameraUtilityDebugData debugData = CameraUtility.GetDebugData();
+
+            if (!debugData.Ready)
+            {
+                return;
+            }
+            
+            Color centerColor = new Color(0.93f, 0.19f, 0.51f);
+            Color minColor = new Color(0.04f, 0.35f, 0.77f);
+            Color maxColor = new Color(1f, 0.42f, 0.18f);
+            
+            Handles.color = centerColor;
+            Vector3 normal = -sceneView.camera.transform.forward;
+            Handles.DrawSolidDisc(debugData.TargetBoundsCenter, normal, 0.25f);
+            
+            Handles.DrawLine(debugData.CameraPosition, debugData.TargetBoundsCenter);
+
+            Bounds targetBounds = debugData.TargetBounds;
+            Handles.color = minColor;
+            Handles.DrawSolidDisc(targetBounds.min, normal, 0.2f);
+            Handles.color = maxColor;
+            Handles.DrawSolidDisc(targetBounds.max, normal, 0.2f);
+            Handles.color = Color.white;
+            Handles.DrawWireCube(targetBounds.center, targetBounds.size);
+        }
+        
+        #endregion
     }
 }
