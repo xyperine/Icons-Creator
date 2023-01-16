@@ -1,7 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace IconsCreationTool
 {
@@ -55,9 +60,66 @@ namespace IconsCreationTool
             GetWindow<IconsCreatorWindow>(TITLE);
             
             AddIconsCreationCameraTag();
+            CreateScene();
         }
-        
-        
+
+
+        private static void CreateScene()
+        {
+            const string sceneName = "TestScene";
+            string path = string.Join('/', Application.dataPath, "Scenes", sceneName + ".unity");
+            if (File.Exists(path))
+            {
+                return;
+            }
+            
+            Scene prevActiveScene = EditorSceneManager.GetActiveScene();
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
+            scene.name = sceneName;
+            Action setupSceneEnvironment = () =>
+            {
+                Camera camera = null;
+                Light light = null;
+                
+                foreach (GameObject rootGameObject in scene.GetRootGameObjects())
+                {
+                    camera ??= rootGameObject.GetComponentInChildren<Camera>();
+                    if (camera)
+                    {
+                        camera.gameObject.tag = CameraUtility.IconsCreationCameraTag;
+                        camera.clearFlags = CameraClearFlags.Nothing;
+                        camera.orthographic = true;
+                    }
+                    
+                    light ??= rootGameObject.GetComponentInChildren<Light>();
+                    if (light)
+                    {
+                        light.useColorTemperature = false;
+                        light.color = Color.white;
+                    }
+
+                    if (camera && light)
+                    {
+                        return;
+                    }
+                }
+            };
+            
+            setupSceneEnvironment.Invoke();
+
+            RenderSettings.skybox = null;
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientSkyColor = new Color(0.73f, 0.73f, 0.73f);
+
+            EditorSceneManager.SaveScene(scene, $"Assets/Scenes/{sceneName}.unity");
+
+            EditorSceneManager.UnloadSceneAsync(scene);
+            EditorSceneManager.SetActiveScene(prevActiveScene);
+
+            Debug.Log($"Scene {sceneName} was created!");
+        }
+
+
         private static void AddIconsCreationCameraTag()
         {
             if (!InternalEditorUtility.tags.Contains(CameraUtility.IconsCreationCameraTag))
@@ -70,15 +132,50 @@ namespace IconsCreationTool
         private void OnEnable()
         {
             Load();
-
+            
             SetupSerializedProperties();
             
             _iconsCreator.SetData(name, compression, filterMode);
-            CameraUtility.SetData(targetObject, resolution, padding);
             
-            CameraUtility.RetrieveCamera();
+            //UpdateScene();
+            // CameraUtility.SetData(targetObject, resolution, padding);
+            //
+            // CameraUtility.RetrieveCamera();
 
             SceneView.duringSceneGui += DrawDebugGizmos;
+        }
+
+
+        private void UpdateScene()
+        {
+            Scene prevActiveScene = EditorSceneManager.GetActiveScene();
+            Light[] allLightSources = FindObjectsOfType<Light>();
+            
+            foreach (Light lightSource in allLightSources)
+            {
+                lightSource.enabled = false;
+            }
+            
+            const string sceneName = "TestScene";
+            Scene scene = EditorSceneManager.OpenScene($"Assets/Scenes/{sceneName}.unity", OpenSceneMode.Additive);
+            EditorSceneManager.SetActiveScene(scene);
+            GameObject target = Instantiate(targetObject, Vector3.zero, Quaternion.AngleAxis(45f, Vector3.up));
+            
+            CameraUtility.SetData(target, resolution, padding);
+            CameraUtility.RetrieveCamera();
+            CameraUtility.AdjustCamera();
+            CameraUtility.AdjustCamera();
+
+
+            UpdatePreviewTexture();
+            
+            EditorSceneManager.UnloadSceneAsync(scene);
+            EditorSceneManager.SetActiveScene(prevActiveScene);
+            
+            foreach (Light lightSource in allLightSources)
+            {
+                lightSource.enabled = true;
+            }
         }
 
 
@@ -131,10 +228,10 @@ namespace IconsCreationTool
             }
             
             _iconsCreator.SetData(name, compression, filterMode);
-            CameraUtility.SetData(targetObject, resolution, padding);
+            //CameraUtility.SetData(targetObject, resolution, padding);
 
-            CameraUtility.RetrieveCamera();
-            CameraUtility.AdjustCamera();
+            //CameraUtility.RetrieveCamera();
+            //CameraUtility.AdjustCamera();
         }
 
 
@@ -152,7 +249,7 @@ namespace IconsCreationTool
 
             if (_serializedObject.ApplyModifiedProperties())
             {
-                UpdatePreviewTexture();
+                UpdateScene();
             }
 
             DrawPreview();
@@ -235,22 +332,45 @@ namespace IconsCreationTool
                     
                     using (new GUILayout.HorizontalScope())
                     {
-                        if (GUILayout.Button("Adjust Camera"))
-                        {
-                            CameraUtility.AdjustCamera();
-
-                            UpdatePreviewTexture();
-                        }
-
                         if (GUILayout.Button("Create Icon"))
                         {
-                            CameraUtility.AdjustCamera();
-
-                            UpdatePreviewTexture();
-                            _iconsCreator.CreateIcon();
+                            CreateIcon();
                         }
                     }
                 }
+            }
+        }
+
+
+        private void CreateIcon()
+        {
+            Scene prevActiveScene = EditorSceneManager.GetActiveScene();
+            Light[] allLightSources = FindObjectsOfType<Light>();
+            
+            foreach (Light lightSource in allLightSources)
+            {
+                lightSource.enabled = false;
+            }
+            
+            const string sceneName = "TestScene";
+            Scene scene = EditorSceneManager.OpenScene($"Assets/Scenes/{sceneName}.unity", OpenSceneMode.Additive);
+            EditorSceneManager.SetActiveScene(scene);
+            GameObject target = Instantiate(targetObject, Vector3.zero, Quaternion.AngleAxis(45f, Vector3.up));
+            
+            CameraUtility.SetData(target, resolution, padding);
+            CameraUtility.RetrieveCamera();
+            CameraUtility.AdjustCamera();
+            CameraUtility.AdjustCamera();
+            
+            _iconsCreator.CreateIcon();
+            UpdatePreviewTexture();
+            
+            EditorSceneManager.UnloadSceneAsync(scene);
+            EditorSceneManager.SetActiveScene(prevActiveScene);
+            
+            foreach (Light lightSource in allLightSources)
+            {
+                lightSource.enabled = true;
             }
         }
 

@@ -46,7 +46,7 @@ namespace IconsCreationTool
             {
                 Debug.LogWarning($"No camera found! Create camera object and tag it \"{ICONS_CREATION_CAMERA_TAG}\"");
             }
-            
+
             Debug.Log("Camera found!");
         }
 
@@ -71,7 +71,7 @@ namespace IconsCreationTool
                 Debug.LogWarning("No target found!");
                 return;
             }
-            
+
             _targetOrthographicBounds = _targetObject.GetOrthographicBounds(_camera);
 
             SetRotation();
