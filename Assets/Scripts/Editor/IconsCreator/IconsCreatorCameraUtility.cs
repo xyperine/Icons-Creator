@@ -125,18 +125,5 @@ namespace IconsCreationTool
 
             return image;
         }
-
-
-        public IconsCreatorCameraUtilityDebugData GetDebugData()
-        {
-            bool ready = _targetObject && _camera;
-
-            if (!ready)
-            {
-                return default;
-            }
-
-            return new IconsCreatorCameraUtilityDebugData(true, _camera.transform.position, _targetOrthographicBounds);
-        }
     }
 }
