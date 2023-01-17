@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using UnityEditor;
-using UnityEditorInternal;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace IconsCreationTool
@@ -18,11 +16,9 @@ namespace IconsCreationTool
 
         private const int PREVIEW_SIZE = 256;
 
-        private static readonly IconsCreatorSceneHandler SceneHandler = new IconsCreatorSceneHandler();
-        private static readonly IconsCreatorCameraUtility CameraUtility = new IconsCreatorCameraUtility();
-        private readonly IconsCreator _iconsCreator = new IconsCreator(CameraUtility);
+        private readonly IconsCreator _iconsCreator = new IconsCreator();
 
-        private bool _advancedUnfolded;
+        private bool _advancedSettingsUnfolded;
         
         private Texture2D _previewTexture;
 
@@ -48,40 +44,28 @@ namespace IconsCreationTool
         private SerializedProperty _filterModeSerializedProperty;
         
         #endregion
-        
+
 
         [MenuItem(FULL_MENU_NAME)]
         private static void OpenWindow()
         {
             GetWindow<IconsCreatorWindow>(TITLE);
-            
-            AddIconsCreationCameraTag();
-            SceneHandler.CreateSceneIfItDoesntExist(CameraUtility.IconsCreationCameraTag);
         }
 
 
-        private static void AddIconsCreationCameraTag()
+        private void Awake()
         {
-            if (!InternalEditorUtility.tags.Contains(CameraUtility.IconsCreationCameraTag))
-            {
-                InternalEditorUtility.AddTag(CameraUtility.IconsCreationCameraTag);
-            }
+            _iconsCreator.InitializeEnvironment();
         }
 
-        
-        
-        
+
         private void OnEnable()
         {
             Load();
             
             SetupSerializedProperties();
-            
-            _iconsCreator.SetData(name, compression, filterMode);
-
-            SceneView.duringSceneGui += DrawDebugGizmos;
         }
-        
+
 
         private void Load()
         {
@@ -109,8 +93,6 @@ namespace IconsCreationTool
         private void OnDisable()
         {
             Save();
-            
-            SceneView.duringSceneGui -= DrawDebugGizmos;
         }
 
 
@@ -124,21 +106,10 @@ namespace IconsCreationTool
         }
 
 
-        private void OnValidate()
-        {
-            if (!targetObject)
-            {
-                return;
-            }
-            
-            _iconsCreator.SetData(name, compression, filterMode);
-        }
-
-
         protected void OnGUI()
         {
             _serializedObject.Update();
-            
+
             DrawSettings();
             
             GUILayout.Space(8f);
@@ -149,29 +120,10 @@ namespace IconsCreationTool
 
             if (_serializedObject.ApplyModifiedProperties())
             {
-                UpdateScene();
+                OnDataChanged();
             }
 
             DrawPreview();
-        }
-
-
-        private void UpdatePreviewTexture()
-        {
-            _previewTexture = CameraUtility.CaptureCameraView();
-            _previewTexture.filterMode = filterMode;
-            
-            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(PREVIEW_SIZE, PREVIEW_SIZE);
-            RenderTexture.active = temporaryRenderTexture;
-            
-            Graphics.Blit(_previewTexture, temporaryRenderTexture);
-            
-            _previewTexture.Reinitialize(PREVIEW_SIZE, PREVIEW_SIZE, _previewTexture.graphicsFormat, false);
-            _previewTexture.filterMode = filterMode;
-            _previewTexture.ReadPixels(new Rect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE), 0, 0);
-            _previewTexture.Apply();
-            
-            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
         }
 
 
@@ -182,16 +134,16 @@ namespace IconsCreationTool
                 GUILayout.Label("Settings", EditorStyles.boldLabel);
                 GUILayout.Space(4f);
 
-                DrawBasic();
+                DrawBasicSettings();
             
                 GUILayout.Space(8f);
 
-                DrawAdvanced();
+                DrawAdvancedSettings();
             }
         }
-        
 
-        private void DrawBasic()
+
+        private void DrawBasicSettings()
         {
             EditorGUILayout.PropertyField(_nameSerializedProperty);
             EditorGUILayout.IntSlider(_resolutionSerializedProperty, 1, 1024);
@@ -200,13 +152,13 @@ namespace IconsCreationTool
         }
 
 
-        private void DrawAdvanced()
+        private void DrawAdvancedSettings()
         {
             using (new GUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                _advancedUnfolded = EditorGUILayout.Foldout(_advancedUnfolded, "Advanced");
+                _advancedSettingsUnfolded = EditorGUILayout.Foldout(_advancedSettingsUnfolded, "Advanced");
 
-                if (!_advancedUnfolded)
+                if (!_advancedSettingsUnfolded)
                 {
                     return;
                 }
@@ -232,53 +184,44 @@ namespace IconsCreationTool
                     
                     if (GUILayout.Button("Create Icon"))
                     {
-                        CreateIcon();
+                        _iconsCreator.CreateIcon();
                     }
                 }
             }
         }
 
 
-        private void CreateIcon()
+        private void OnDataChanged()
         {
-            if (!targetObject)
-            {
-                return;
-            }
-            
-            SceneHandler.InteractWithTarget(targetObject, target =>
-            {
-                AdjustCamera(target);
-            
-                _iconsCreator.CreateIcon();
+            IconsCreatorData data =
+                new IconsCreatorData(resolution, padding, name, compression, filterMode, targetObject);
+            _iconsCreator.SetData(data);
                 
-                UpdatePreviewTexture();
-            });
+            UpdatePreviewTexture();
         }
 
 
-        private void AdjustCamera(GameObject target)
-        {
-            CameraUtility.SetData(target, resolution, padding);
-            CameraUtility.RetrieveCamera();
-            CameraUtility.AdjustCamera();
-            CameraUtility.AdjustCamera();
-        }
-        
-        
-        private void UpdateScene()
+        private void UpdatePreviewTexture()
         {
             if (!targetObject)
             {
                 return;
             }
+
+            _previewTexture = _iconsCreator.CameraView;
+            _previewTexture.filterMode = filterMode;
             
-            SceneHandler.InteractWithTarget(targetObject, target =>
-            {
-                AdjustCamera(target);
+            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(PREVIEW_SIZE, PREVIEW_SIZE);
+            RenderTexture.active = temporaryRenderTexture;
             
-                UpdatePreviewTexture();
-            });
+            Graphics.Blit(_previewTexture, temporaryRenderTexture);
+            
+            _previewTexture.Reinitialize(PREVIEW_SIZE, PREVIEW_SIZE, _previewTexture.graphicsFormat, false);
+            _previewTexture.filterMode = filterMode;
+            _previewTexture.ReadPixels(new Rect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE), 0, 0);
+            _previewTexture.Apply();
+            
+            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
         }
 
 
@@ -305,43 +248,5 @@ namespace IconsCreationTool
                 GUILayout.Box(_previewTexture, boxStyle, boxOptions);
             }
         }
-        
-        
-        #region --- Debug Gizmos ---
-        
-        private void DrawDebugGizmos(SceneView sceneView)
-        {
-            if (CameraUtility == null)
-            {
-                return;
-            }
-
-            IconsCreatorCameraUtilityDebugData debugData = CameraUtility.GetDebugData();
-
-            if (!debugData.Ready)
-            {
-                return;
-            }
-            
-            Color centerColor = new Color(0.93f, 0.19f, 0.51f);
-            Color minColor = new Color(0.04f, 0.35f, 0.77f);
-            Color maxColor = new Color(1f, 0.42f, 0.18f);
-            
-            Handles.color = centerColor;
-            Vector3 normal = -sceneView.camera.transform.forward;
-            Handles.DrawSolidDisc(debugData.TargetBoundsCenter, normal, 0.25f);
-            
-            Handles.DrawLine(debugData.CameraPosition, debugData.TargetBoundsCenter);
-
-            Bounds targetBounds = debugData.TargetBounds;
-            Handles.color = minColor;
-            Handles.DrawSolidDisc(targetBounds.min, normal, 0.2f);
-            Handles.color = maxColor;
-            Handles.DrawSolidDisc(targetBounds.max, normal, 0.2f);
-            Handles.color = Color.white;
-            Handles.DrawWireCube(targetBounds.center, targetBounds.size);
-        }
-        
-        #endregion
     }
 }

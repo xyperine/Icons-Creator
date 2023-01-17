@@ -1,82 +1,162 @@
-﻿using System.IO;
+﻿using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace IconsCreationTool
 {
     public class IconsCreator
     {
-        private const string DIRECTORY = "/Textures/Icons/";
-        
+        private IconsCreatorData _data;
+
+        private readonly IconsCreatorInternalSceneHandler _sceneHandler;
         private readonly IconsCreatorCameraUtility _cameraUtility;
+        private readonly IconsSaver _iconsSaver;
 
-        private string _name;
-        private TextureImporterCompression _compression;
-        private FilterMode _filterMode;
+        public Texture2D CameraView { get; private set; }
 
-        
-        
-        public IconsCreator(IconsCreatorCameraUtility cameraUtility)
+
+        public IconsCreator()
         {
-            _cameraUtility = cameraUtility;
+            _sceneHandler = new IconsCreatorInternalSceneHandler();
+            _cameraUtility = new IconsCreatorCameraUtility();
+            _iconsSaver = new IconsSaver(_cameraUtility);
         }
 
 
-        public void SetData(string name, TextureImporterCompression compression, FilterMode filterMode)
+        public void InitializeEnvironment()
         {
-            _name = name;
-            _compression = compression;
-            _filterMode = filterMode;
+            AddIconsCreationCameraTag();
+            _sceneHandler.CreateSceneIfItDoesNotExist(_cameraUtility.IconsCreationCameraTag);
         }
         
         
+        private void AddIconsCreationCameraTag()
+        {
+            if (!InternalEditorUtility.tags.Contains(_cameraUtility.IconsCreationCameraTag))
+            {
+                InternalEditorUtility.AddTag(_cameraUtility.IconsCreationCameraTag);
+            }
+        }
+
+
+        public void SetData(IconsCreatorData data)
+        {
+            _data = data;
+
+            _cameraUtility.SetData(_data.TargetObject, _data.Resolution, _data.Padding);
+            _iconsSaver.SetData(_data.Name, _data.Compression, _data.FilterMode);
+
+            Debug.Log("Data passed");
+            
+            OnDataChanged();
+        }
+
+
+        private void OnDataChanged()
+        {
+            if (!_data.TargetObject)
+            {
+                return;
+            }
+            
+            UpdateCameraView();
+            _iconsSaver.SetData(_data.Name, _data.Compression, _data.FilterMode);
+        }
+
+
+        private void UpdateCameraView()
+        {
+            if (!_data.TargetObject)
+            {
+                return;
+            }
+            
+            _sceneHandler.InteractWithTarget(_data.TargetObject, AdjustCamera);
+        }
+
+
         public void CreateIcon()
         {
-            if (!_cameraUtility.Orthographic)
+            if (!_data.TargetObject)
             {
-                throw new InvalidDataException("Camera has to be in orthographic mode!");
+                return;
             }
+            
+            _sceneHandler.InteractWithTarget(_data.TargetObject, target =>
+            {
+                AdjustCamera(target);
+            
+                _iconsSaver.CreateIcon();
+            });
+        }
 
+
+        private void AdjustCamera(GameObject target)
+        {
+            _cameraUtility.SetData(target, _data.Resolution, _data.Padding);
+            _cameraUtility.RetrieveCamera();
             _cameraUtility.AdjustCamera();
-
-            Texture2D icon = _cameraUtility.CaptureCameraView();
-
-            SaveIcon(icon);
+            _cameraUtility.AdjustCamera();
+            
+            CameraView = _cameraUtility.CaptureCameraView();
+            CameraView.filterMode = _data.FilterMode;
+        }
+        
+        
+        #region --- Debug Gizmos ---
+        
+        /// <summary>
+        /// Doesn't work currently
+        /// </summary>
+        public void StartDrawingGizmos()
+        {
+            SceneView.duringSceneGui += DrawDebugGizmos;
         }
 
 
-        private void SaveIcon(Texture2D image)
+        /// <summary>
+        /// Doesn't work currently
+        /// </summary>
+        public void StopDrawingGizmos()
         {
-            byte[] bytes = image.EncodeToPNG();
-            Object.DestroyImmediate(image);
+            SceneView.duringSceneGui -= DrawDebugGizmos;
+        }
 
-            string path = Application.dataPath + DIRECTORY + _name + ".png";
-            if (!Directory.Exists(Application.dataPath + DIRECTORY))
+        
+        private void DrawDebugGizmos(SceneView sceneView)
+        {
+            if (_cameraUtility == null)
             {
-                Directory.CreateDirectory(Application.dataPath + DIRECTORY);
+                return;
             }
 
-            File.WriteAllBytes(path, bytes);
-            AssetDatabase.Refresh();
+            IconsCreatorCameraUtilityDebugData debugData = _cameraUtility.GetDebugData();
 
-            ConvertToSprite(path);
+            if (!debugData.Ready)
+            {
+                return;
+            }
+            
+            Color centerColor = new Color(0.93f, 0.19f, 0.51f);
+            Color minColor = new Color(0.04f, 0.35f, 0.77f);
+            Color maxColor = new Color(1f, 0.42f, 0.18f);
+            
+            Handles.color = centerColor;
+            Vector3 normal = -sceneView.camera.transform.forward;
+            Handles.DrawSolidDisc(debugData.TargetBoundsCenter, normal, 0.25f);
+            
+            Handles.DrawLine(debugData.CameraPosition, debugData.TargetBoundsCenter);
+
+            Bounds targetBounds = debugData.TargetBounds;
+            Handles.color = minColor;
+            Handles.DrawSolidDisc(targetBounds.min, normal, 0.2f);
+            Handles.color = maxColor;
+            Handles.DrawSolidDisc(targetBounds.max, normal, 0.2f);
+            Handles.color = Color.white;
+            Handles.DrawWireCube(targetBounds.center, targetBounds.size);
         }
-
-
-        private void ConvertToSprite(string path)
-        {
-            string relativePath = path.Remove(0, Application.dataPath.Length - "Assets".Length);
-
-            TextureImporter textureImporter = (TextureImporter) AssetImporter.GetAtPath(relativePath);
-            textureImporter.textureType = TextureImporterType.Sprite;
-            textureImporter.textureCompression = _compression;
-            textureImporter.filterMode = _filterMode;
-            textureImporter.mipmapEnabled = false;
-
-            textureImporter.SaveAndReimport();
-            AssetDatabase.Refresh();
-
-            EditorGUIUtility.PingObject(textureImporter);
-        }
+        
+        #endregion
     }
 }

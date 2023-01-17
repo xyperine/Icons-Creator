@@ -14,7 +14,7 @@ namespace IconsCreationTool.Tests
         private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
         private readonly IconsCreatorCameraUtility _cameraUtility = new IconsCreatorCameraUtility();
-        private IconsCreator _iconsCreator;
+        private IconsSaver _iconsSaver;
 
         private GameObject _target;
 
@@ -55,14 +55,14 @@ namespace IconsCreationTool.Tests
 
         private void SetupIconsCreator()
         {
-            _iconsCreator = new IconsCreator(_cameraUtility);
-            _iconsCreator.SetData(DESIRED_NAME, DESIRED_COMPRESSION, DESIRED_FILTER_MODE);
+            _iconsSaver = new IconsSaver(_cameraUtility);
+            _iconsSaver.SetData(DESIRED_NAME, DESIRED_COMPRESSION, DESIRED_FILTER_MODE);
         }
 
 
         private void CreateIcon()
         {
-            _iconsCreator.CreateIcon();
+            _iconsSaver.CreateIcon();
             
             _textureImporter = (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_NAME + FILE_EXTENSION);
         }

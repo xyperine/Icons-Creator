@@ -8,9 +8,10 @@ using Object = UnityEngine.Object;
 
 namespace IconsCreationTool
 {
-    public class IconsCreatorSceneHandler
+    public class IconsCreatorInternalSceneHandler
     {
         private const string SCENE_NAME = "TestScene";
+        private readonly string _relativeScenePath = $"Assets/Scenes/{SCENE_NAME}.unity"; 
 
         private Scene _openedScene;
         private Light[] _allLightSources;
@@ -18,7 +19,7 @@ namespace IconsCreationTool
         private string _iconsCreationCameraTag;
 
 
-        public void CreateSceneIfItDoesntExist(string iconsCreationCameraTag)
+        public void CreateSceneIfItDoesNotExist(string iconsCreationCameraTag)
         {
             string path = string.Join('/', Application.dataPath, "Scenes", SCENE_NAME + ".unity");
             if (File.Exists(path))
@@ -42,9 +43,9 @@ namespace IconsCreationTool
 
             SetupSceneRendering();
 
-            EditorSceneManager.SaveScene(scene, $"Assets/Scenes/{SCENE_NAME}.unity");
+            EditorSceneManager.SaveScene(scene, _relativeScenePath);
 
-            EditorSceneManager.UnloadSceneAsync(scene);
+            EditorSceneManager.CloseScene(scene, true);
             EditorSceneManager.SetActiveScene(prevActiveScene);
 
             Debug.Log($"Scene {SCENE_NAME} was created!");
@@ -92,11 +93,17 @@ namespace IconsCreationTool
         public void InteractWithTarget(GameObject targetObject, Action<GameObject> action)
         {
             Scene prevActiveScene = OpenScene();
-            GameObject target = PlaceTarget(targetObject);
-            
-            action?.Invoke(target);
-            
-            CloseScene(prevActiveScene);
+
+            try
+            {
+                GameObject target = PlaceTarget(targetObject);
+
+                action?.Invoke(target);
+            }
+            finally
+            {
+                CloseScene(prevActiveScene);
+            }
         }
         
 
@@ -110,7 +117,7 @@ namespace IconsCreationTool
                 lightSource.enabled = false;
             }
             
-            _openedScene = EditorSceneManager.OpenScene($"Assets/Scenes/{SCENE_NAME}.unity", OpenSceneMode.Additive);
+            _openedScene = EditorSceneManager.OpenScene(_relativeScenePath, OpenSceneMode.Additive);
             EditorSceneManager.SetActiveScene(_openedScene);
 
             return prevActiveScene;
@@ -121,7 +128,7 @@ namespace IconsCreationTool
         {
             if (EditorSceneManager.GetActiveScene().name != SCENE_NAME)
             {
-                Debug.LogWarning("Can place target only in the dedicated scene!");
+                Debug.LogWarning("Can place target only in the internal scene!");
                 return null;
             }
             
@@ -132,7 +139,7 @@ namespace IconsCreationTool
 
         private void CloseScene(Scene prevActiveScene)
         {
-            EditorSceneManager.UnloadSceneAsync(_openedScene);
+            EditorSceneManager.CloseScene(_openedScene, true);
             EditorSceneManager.SetActiveScene(prevActiveScene);
             
             foreach (Light lightSource in _allLightSources)
