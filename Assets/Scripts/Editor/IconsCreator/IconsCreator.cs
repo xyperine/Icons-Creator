@@ -20,7 +20,7 @@ namespace IconsCreationTool
         {
             _sceneHandler = new IconsCreatorInternalSceneHandler();
             _cameraUtility = new IconsCreatorCameraUtility();
-            _iconsSaver = new IconsSaver(_cameraUtility);
+            _iconsSaver = new IconsSaver();
         }
 
 
@@ -87,7 +87,8 @@ namespace IconsCreationTool
             {
                 AdjustCamera(target);
             
-                _iconsSaver.CreateIcon();
+                Texture2D icon = _cameraUtility.CaptureCameraView();
+                _iconsSaver.SaveIcon(icon);
             });
         }
 

@@ -8,19 +8,10 @@ namespace IconsCreationTool
     {
         private const string DIRECTORY = "/Textures/Icons/";
         
-        private readonly IconsCreatorCameraUtility _cameraUtility;
-
         private string _name;
         private TextureImporterCompression _compression;
         private FilterMode _filterMode;
-
         
-        
-        public IconsSaver(IconsCreatorCameraUtility cameraUtility)
-        {
-            _cameraUtility = cameraUtility;
-        }
-
 
         public void SetData(string name, TextureImporterCompression compression, FilterMode filterMode)
         {
@@ -28,24 +19,9 @@ namespace IconsCreationTool
             _compression = compression;
             _filterMode = filterMode;
         }
-        
-        
-        public void CreateIcon()
-        {
-            if (!_cameraUtility.Orthographic)
-            {
-                throw new InvalidDataException("Camera has to be in orthographic mode!");
-            }
-
-            _cameraUtility.AdjustCamera();
-
-            Texture2D icon = _cameraUtility.CaptureCameraView();
-
-            SaveIcon(icon);
-        }
 
 
-        private void SaveIcon(Texture2D image)
+        public void SaveIcon(Texture2D image)
         {
             byte[] bytes = image.EncodeToPNG();
             Object.DestroyImmediate(image);

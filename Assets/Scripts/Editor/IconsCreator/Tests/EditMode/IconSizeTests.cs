@@ -55,14 +55,17 @@ namespace IconsCreationTool.Tests
 
         private void SetupIconsCreator()
         {
-            _iconsSaver = new IconsSaver(_cameraUtility);
+            _iconsSaver = new IconsSaver();
             _iconsSaver.SetData(DESIRED_NAME, DESIRED_COMPRESSION, DESIRED_FILTER_MODE);
         }
 
 
         private void CreateIcon()
         {
-            _iconsSaver.CreateIcon();
+            _cameraUtility.AdjustCamera();
+
+            Texture2D icon = _cameraUtility.CaptureCameraView();
+            _iconsSaver.SaveIcon(icon);
             
             _textureImporter = (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_NAME + FILE_EXTENSION);
         }

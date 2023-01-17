@@ -11,7 +11,7 @@ namespace IconsCreationTool
     public class IconsCreatorInternalSceneHandler
     {
         private const string SCENE_NAME = "TestScene";
-        private readonly string _relativeScenePath = $"Assets/Scenes/{SCENE_NAME}.unity"; 
+        private readonly string _relativeScenePath = $"Assets/Scenes/{SCENE_NAME}.unity";
 
         private Scene _openedScene;
         private Light[] _allLightSources;
@@ -26,7 +26,7 @@ namespace IconsCreationTool
             {
                 return;
             }
-
+            
             _iconsCreationCameraTag = iconsCreationCameraTag;
             
             CreateScene();
@@ -38,7 +38,7 @@ namespace IconsCreationTool
             Scene prevActiveScene = EditorSceneManager.GetActiveScene();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
             scene.name = SCENE_NAME;
-            
+
             SetupSceneComponents(scene);
 
             SetupSceneRendering();
@@ -56,7 +56,7 @@ namespace IconsCreationTool
         {
             Camera camera = null;
             Light light = null;
-                
+
             foreach (GameObject rootGameObject in scene.GetRootGameObjects())
             {
                 camera ??= rootGameObject.GetComponentInChildren<Camera>();
@@ -66,7 +66,7 @@ namespace IconsCreationTool
                     camera.clearFlags = CameraClearFlags.Nothing;
                     camera.orthographic = true;
                 }
-                    
+
                 light ??= rootGameObject.GetComponentInChildren<Light>();
                 if (light)
                 {
@@ -105,18 +105,18 @@ namespace IconsCreationTool
                 CloseScene(prevActiveScene);
             }
         }
-        
+
 
         private Scene OpenScene()
         {
             Scene prevActiveScene = EditorSceneManager.GetActiveScene();
             _allLightSources = Object.FindObjectsOfType<Light>();
-            
+
             foreach (Light lightSource in _allLightSources)
             {
                 lightSource.enabled = false;
             }
-            
+
             _openedScene = EditorSceneManager.OpenScene(_relativeScenePath, OpenSceneMode.Additive);
             EditorSceneManager.SetActiveScene(_openedScene);
 
@@ -131,7 +131,7 @@ namespace IconsCreationTool
                 Debug.LogWarning("Can place target only in the internal scene!");
                 return null;
             }
-            
+
             GameObject target = Object.Instantiate(targetObject, Vector3.zero, Quaternion.AngleAxis(45f, Vector3.up));
             return target;
         }
@@ -139,11 +139,16 @@ namespace IconsCreationTool
 
         private void CloseScene(Scene prevActiveScene)
         {
-            EditorSceneManager.CloseScene(_openedScene, true);
             EditorSceneManager.SetActiveScene(prevActiveScene);
-            
+            EditorSceneManager.CloseScene(_openedScene, true);
+
             foreach (Light lightSource in _allLightSources)
             {
+                if (!lightSource)
+                {
+                    continue;
+                }
+
                 lightSource.enabled = true;
             }
         }
