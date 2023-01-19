@@ -38,6 +38,7 @@ namespace IconsCreationTool
             Scene prevActiveScene = EditorSceneManager.GetActiveScene();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
             scene.name = SCENE_NAME;
+            EditorSceneManager.SetSceneCullingMask(scene,1 << 6);
 
             SetupSceneComponents(scene);
 
@@ -65,6 +66,7 @@ namespace IconsCreationTool
                     camera.gameObject.tag = _iconsCreationCameraTag;
                     camera.clearFlags = CameraClearFlags.Nothing;
                     camera.orthographic = true;
+                    camera.cullingMask = 1 << 6;
                 }
 
                 light ??= rootGameObject.GetComponentInChildren<Light>();
@@ -93,10 +95,15 @@ namespace IconsCreationTool
         public void InteractWithTarget(GameObject targetObject, Action<GameObject> action)
         {
             Scene prevActiveScene = OpenScene();
-
+            
             try
             {
                 GameObject target = PlaceTarget(targetObject);
+                target.layer = 6;
+                foreach (Transform transform in target.transform)
+                {
+                    transform.gameObject.layer = 6;
+                }
 
                 action?.Invoke(target);
             }

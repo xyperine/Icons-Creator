@@ -5,6 +5,7 @@ namespace IconsCreationTool
 {
     public struct IconsCreatorData
     {
+        public IconsCreatorUserWorkflow UserWorkflow { get; }
         public int Resolution { get; }
         public float Padding { get; }
         public string Name { get; }
@@ -13,9 +14,10 @@ namespace IconsCreationTool
         public GameObject TargetObject { get; }
 
 
-        public IconsCreatorData(int resolution, float padding, string name, TextureImporterCompression compression,
+        public IconsCreatorData(IconsCreatorUserWorkflow userWorkflow, int resolution, float padding, string name, TextureImporterCompression compression,
             FilterMode filterMode, GameObject targetObject)
         {
+            UserWorkflow = userWorkflow;
             Resolution = resolution;
             Padding = padding;
             Name = name;

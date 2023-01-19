@@ -1,6 +1,8 @@
 ﻿using System;
 using IconsCreationTool.Utility.Extensions;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace IconsCreationTool
 {
@@ -18,33 +20,41 @@ namespace IconsCreationTool
         private float _distanceToTarget = 10f;
 
         private Vector3 CameraOffset => -_camera.transform.forward * _distanceToTarget;
-        
-        public bool Orthographic => _camera.orthographic;
         public string IconsCreationCameraTag => ICONS_CREATION_CAMERA_TAG;
 
 
         public void RetrieveCamera()
         {
+            Scene activeScene = EditorSceneManager.GetActiveScene();
+            
             if (_camera)
             {
-                if (_camera.gameObject.CompareTag(ICONS_CREATION_CAMERA_TAG)) 
+                bool isInValidScene = _camera.scene == activeScene;
+                bool isTagged = _camera.gameObject.CompareTag(ICONS_CREATION_CAMERA_TAG);
+
+                if (isInValidScene && isTagged) 
                 {
                     return;
                 }
             }
-            
-            GameObject cameraObject = GameObject.FindGameObjectWithTag(ICONS_CREATION_CAMERA_TAG);
-            if (!cameraObject)
+
+            foreach (GameObject rootGameObject in activeScene.GetRootGameObjects())
             {
-                Debug.LogWarning($"No game object tagged \"{ICONS_CREATION_CAMERA_TAG}\" found!");
-                return;
+                Camera camera = rootGameObject.GetComponentInChildren<Camera>();
+                if (!camera)
+                {
+                    continue;
+                }
+                if (camera.CompareTag(ICONS_CREATION_CAMERA_TAG))
+                {
+                    _camera = camera;
+                }
             }
             
-            _camera = cameraObject.GetComponent<Camera>();
-
             if (!_camera)
             {
                 Debug.LogWarning($"No camera found! Create camera object and tag it \"{ICONS_CREATION_CAMERA_TAG}\"");
+                return;
             }
 
             Debug.Log("Camera found!");

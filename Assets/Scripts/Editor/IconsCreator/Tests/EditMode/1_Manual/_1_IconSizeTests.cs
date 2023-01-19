@@ -1,20 +1,23 @@
 ﻿using System;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-namespace IconsCreationTool.Tests
+namespace IconsCreationTool.Tests._1_Manual
 {
-    public class IconSizeTests
+    public class _1_IconSizeTests
     {
+        private const string MANUAL_SCENE_PATH = "Assets/Scenes/Icons Creation.unity";
+
         private const string DESIRED_NAME = "TestIcon";
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
         private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
-        private readonly IconsCreatorCameraUtility _cameraUtility = new IconsCreatorCameraUtility();
-        private IconsSaver _iconsSaver;
+        private readonly IconsCreator _iconsCreator = new IconsCreator();
 
         private GameObject _target;
 
@@ -24,48 +27,35 @@ namespace IconsCreationTool.Tests
         [OneTimeSetUp]
         public void Initialize()
         {
-            CreateTarget();
+            OpenManualScene();
             
-            SetupCamera();
-            SetupIconsCreator();
-        }
-
-
-        private void CreateTarget()
-        {
             _target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             _target.transform.position = new Vector3(1024f, 0f, 1024f);
         }
         
         
-        private void SetupCamera()
+        private void OpenManualScene()
         {
-            _cameraUtility.RetrieveCamera();
-            
-            SetResolution(512);
+            Scene manualScene = EditorSceneManager.GetSceneByPath(MANUAL_SCENE_PATH);
+            if (!manualScene.isLoaded)
+            { 
+                manualScene = EditorSceneManager.OpenScene(MANUAL_SCENE_PATH);
+            }
+            EditorSceneManager.SetActiveScene(manualScene);
         }
-
+        
 
         private void SetResolution(int resolution)
         {
-            _cameraUtility.SetData(_target, resolution, 0f);
-            _cameraUtility.AdjustCamera();
-        }
-
-
-        private void SetupIconsCreator()
-        {
-            _iconsSaver = new IconsSaver();
-            _iconsSaver.SetData(DESIRED_NAME, DESIRED_COMPRESSION, DESIRED_FILTER_MODE);
+            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Manual, resolution, 0f, DESIRED_NAME,
+                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, _target);
+            _iconsCreator.SetData(data);
         }
 
 
         private void CreateIcon()
         {
-            _cameraUtility.AdjustCamera();
-
-            Texture2D icon = _cameraUtility.CaptureCameraView();
-            _iconsSaver.SaveIcon(icon);
+            _iconsCreator.CreateIcon();
             
             _textureImporter = (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_NAME + FILE_EXTENSION);
         }

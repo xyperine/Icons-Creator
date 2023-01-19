@@ -70,25 +70,14 @@ namespace IconsCreationTool
             {
                 return;
             }
-            
-            _sceneHandler.InteractWithTarget(_data.TargetObject, AdjustCamera);
-        }
 
-
-        public void CreateIcon()
-        {
-            if (!_data.TargetObject)
+            if (_data.UserWorkflow == IconsCreatorUserWorkflow.Manual)
             {
+                AdjustCamera(_data.TargetObject);
                 return;
             }
-            
-            _sceneHandler.InteractWithTarget(_data.TargetObject, target =>
-            {
-                AdjustCamera(target);
-            
-                Texture2D icon = _cameraUtility.CaptureCameraView();
-                _iconsSaver.SaveIcon(icon);
-            });
+
+            _sceneHandler.InteractWithTarget(_data.TargetObject, AdjustCamera);
         }
 
 
@@ -101,6 +90,44 @@ namespace IconsCreationTool
             
             CameraView = _cameraUtility.CaptureCameraView();
             CameraView.filterMode = _data.FilterMode;
+        }
+
+
+        public void CreateIcon()
+        {
+            if (!_data.TargetObject)
+            {
+                return;
+            }
+
+            if (_data.UserWorkflow == IconsCreatorUserWorkflow.Manual)
+            {
+                CreateIconFromSceneObject();
+                return;
+            }
+
+            CreateIconFromPrefab();
+        }
+
+
+        private void CreateIconFromSceneObject()
+        {
+            AdjustCamera(_data.TargetObject);
+            
+            Texture2D icon = _cameraUtility.CaptureCameraView();
+            _iconsSaver.SaveIcon(icon);
+        }
+
+
+        private void CreateIconFromPrefab()
+        {
+            _sceneHandler.InteractWithTarget(_data.TargetObject, target =>
+                {
+                    AdjustCamera(target);
+            
+                    Texture2D icon = _cameraUtility.CaptureCameraView();
+                    _iconsSaver.SaveIcon(icon);
+                });
         }
     }
 }

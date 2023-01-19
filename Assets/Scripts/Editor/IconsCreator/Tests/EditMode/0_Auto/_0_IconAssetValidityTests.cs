@@ -2,9 +2,9 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace IconsCreationTool.Tests
+namespace IconsCreationTool.Tests._0_Auto
 {
-    public class IconAssetValidityTests
+    public class _0_IconAssetValidityTests
     {
         private const string DESIRED_NAME = "TestIcon";
         private const string FILE_EXTENSION = ".png";
@@ -12,8 +12,7 @@ namespace IconsCreationTool.Tests
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
         private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
-        private readonly IconsCreatorCameraUtility _cameraUtility = new IconsCreatorCameraUtility();
-        private IconsSaver _iconsSaver;
+        private readonly IconsCreator _iconsCreator = new IconsCreator();
 
         private TextureImporter _textureImporter;
 
@@ -21,41 +20,18 @@ namespace IconsCreationTool.Tests
         [OneTimeSetUp]
         public void Initialize()
         {
-            SetupCamera();
-            SetupIconsCreator();
-            
-            CreateIcon();
-        }
-
-
-        private void SetupCamera()
-        {
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             target.transform.position = new Vector3(1024f, 0f, 1024f);
-            _cameraUtility.SetData(target, 512, 0f);
-            _cameraUtility.RetrieveCamera();
-            _cameraUtility.AdjustCamera();
-        }
+            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Auto, 512, 0f, DESIRED_NAME,
+                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, target);
+            _iconsCreator.SetData(data);
 
-
-        private void SetupIconsCreator()
-        {
-            _iconsSaver = new IconsSaver();
-            _iconsSaver.SetData(DESIRED_NAME, DESIRED_COMPRESSION, DESIRED_FILTER_MODE);
-        }
-
-
-        private void CreateIcon()
-        {
-            _cameraUtility.AdjustCamera();
-
-            Texture2D icon = _cameraUtility.CaptureCameraView();
-            _iconsSaver.SaveIcon(icon);
+            _iconsCreator.CreateIcon();
             
             _textureImporter = (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_NAME + FILE_EXTENSION);
         }
-        
-        
+
+
         [Test]
         public void Asset_Should_Exist_At_Given_Path()
         {
