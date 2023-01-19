@@ -28,9 +28,9 @@ namespace IconsCreationTool.Tests._0_Auto
         }
 
 
-        private void SetResolution(int resolution)
+        private void SetSize(int size)
         {
-            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Auto, resolution, 0f, DESIRED_NAME,
+            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Auto, size, 0f, DESIRED_NAME,
                 DESIRED_COMPRESSION, DESIRED_FILTER_MODE, _target);
             _iconsCreator.SetData(data);
         }
@@ -47,28 +47,28 @@ namespace IconsCreationTool.Tests._0_Auto
         [Test]
         public void Asset_Should_Be_32px_Wide()
         {
-            const int resolution = 32;
+            const int size = 32;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, width);
+            Assert.AreEqual(size, width);
         }
         
         
         [Test]
         public void Asset_Should_Be_512px_Wide()
         {
-            const int resolution = 512;
+            const int size = 512;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, width);
+            Assert.AreEqual(size, width);
         }
 
         
@@ -76,91 +76,91 @@ namespace IconsCreationTool.Tests._0_Auto
         [Test]
         public void Asset_Should_Be_1024px_Wide()
         {
-            const int resolution = 1024;
+            const int size = 1024;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, width);
+            Assert.AreEqual(size, width);
         }
         
         
         [Test]
         public void Asset_Should_Be_381px_Wide()
         {
-            const int resolution = 381;
+            const int size = 381;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, width);
+            Assert.AreEqual(size, width);
         }
         
         
         [Test]
         public void Asset_Should_Be_32px_High()
         {
-            const int resolution = 1024;
+            const int size = 1024;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, height);
+            Assert.AreEqual(size, height);
         }
         
         
         [Test]
         public void Asset_Should_Be_512px_High()
         {
-            const int resolution = 512;
+            const int size = 512;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, height);
+            Assert.AreEqual(size, height);
         }
 
         
         [Test]
         public void Asset_Should_Be_1024px_High()
         {
-            const int resolution = 1024;
+            const int size = 1024;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, height);
+            Assert.AreEqual(size, height);
         }
 
         
         [Test]
         public void Asset_Should_Be_381px_High()
         {
-            const int resolution = 1024;
+            const int size = 1024;
             
-            SetResolution(resolution);
+            SetSize(size);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
 
-            Assert.AreEqual(resolution, height);
+            Assert.AreEqual(size, height);
         }
         
         
         [Test]
         public void Asset_Should_Have_1to1_Aspect_Ratio()
         {
-            SetResolution(512);
+            SetSize(512);
             CreateIcon();
             
             _textureImporter.GetSourceTextureWidthAndHeight(out int width, out int height);
@@ -171,11 +171,11 @@ namespace IconsCreationTool.Tests._0_Auto
         
         
         [Test]
-        public void Passing_Less_Than_1px_Resolution_To_CameraUtility_Should_Throw_ArgumentOutOfRangeException()
+        public void Passing_Less_Than_1px_Size_To_CameraUtility_Should_Throw_ArgumentOutOfRangeException()
         {
-            const int resolution = -1;
+            const int size = -1;
             
-            TestDelegate setCameraDataAction = () => SetResolution(resolution);
+            TestDelegate setCameraDataAction = () => SetSize(size);
 
             Assert.Throws<ArgumentOutOfRangeException>(setCameraDataAction);
         }

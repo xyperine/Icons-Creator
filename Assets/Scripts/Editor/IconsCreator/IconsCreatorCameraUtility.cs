@@ -14,7 +14,7 @@ namespace IconsCreationTool
         private GameObject _targetObject;
         private Bounds _targetOrthographicBounds;
 
-        private int _resolution;
+        private int _size;
         private float _padding;
         
         private float _distanceToTarget = 10f;
@@ -61,15 +61,15 @@ namespace IconsCreationTool
         }
 
 
-        public void SetData(GameObject targetObject, int resolution, float padding)
+        public void SetData(GameObject targetObject, int size, float padding)
         {
-            if (resolution < 1)
+            if (size < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(resolution));
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
             
             _targetObject = targetObject;
-            _resolution = resolution;
+            _size = size;
             _padding = padding;
         }
 
@@ -116,18 +116,18 @@ namespace IconsCreationTool
 
         public Texture2D CaptureCameraView()
         {
-            if (_resolution < 1)
+            if (_size < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(_resolution));
+                throw new ArgumentOutOfRangeException(nameof(_size));
             }
             
-            _camera.targetTexture = RenderTexture.GetTemporary(_resolution, _resolution);
+            _camera.targetTexture = RenderTexture.GetTemporary(_size, _size);
             RenderTexture.active = _camera.targetTexture;
 
             _camera.Render();
 
-            Texture2D image = new Texture2D(_resolution, _resolution);
-            image.ReadPixels(new Rect(0, 0, _resolution, _resolution), 0, 0);
+            Texture2D image = new Texture2D(_size, _size);
+            image.ReadPixels(new Rect(0, 0, _size, _size), 0, 0);
             image.Apply();
 
             _camera.targetTexture = null;

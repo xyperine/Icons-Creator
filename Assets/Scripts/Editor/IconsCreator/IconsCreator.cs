@@ -45,7 +45,7 @@ namespace IconsCreationTool
         {
             _data = data;
 
-            _cameraUtility.SetData(_data.TargetObject, _data.Resolution, _data.Padding);
+            _cameraUtility.SetData(_data.TargetObject, _data.Size, _data.Padding);
             _iconsSaver.SetData(_data.Name, _data.Compression, _data.FilterMode);
 
             Debug.Log("Data passed");
@@ -62,7 +62,6 @@ namespace IconsCreationTool
             }
             
             UpdateCameraView();
-            _iconsSaver.SetData(_data.Name, _data.Compression, _data.FilterMode);
         }
 
 
@@ -85,13 +84,12 @@ namespace IconsCreationTool
 
         private void AdjustCamera(GameObject target)
         {
-            _cameraUtility.SetData(target, _data.Resolution, _data.Padding);
+            _cameraUtility.SetData(target, _data.Size, _data.Padding);
             _cameraUtility.RetrieveCamera();
             _cameraUtility.AdjustCamera();
             _cameraUtility.AdjustCamera();
             
             CameraView = _cameraUtility.CaptureCameraView();
-            CameraView.filterMode = _data.FilterMode;
         }
 
 

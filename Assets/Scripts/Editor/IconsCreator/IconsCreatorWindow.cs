@@ -9,7 +9,7 @@ namespace IconsCreationTool
         [SerializeField] private IconsCreatorUserWorkflow userWorkflow;
         
         [SerializeField] private new string name = "Icon";
-        [SerializeField] private int resolution = 512;
+        [SerializeField] private int size = 512;
         [SerializeField] private float padding;
 
         [SerializeField] private GameObject targetObject;
@@ -42,7 +42,7 @@ namespace IconsCreationTool
 
         private SerializedProperty _workflowSerializedProperty;
         private SerializedProperty _nameSerializedProperty;
-        private SerializedProperty _resolutionSerializedProperty;
+        private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
         private SerializedProperty _targetObjectSerializedProperty;
         private SerializedProperty _compressionSerializedProperty;
@@ -75,7 +75,7 @@ namespace IconsCreationTool
         private void Load()
         {
             name = EditorPrefs.GetString(nameof(name));
-            resolution = EditorPrefs.GetInt(nameof(resolution));
+            size = EditorPrefs.GetInt(nameof(size));
             padding = EditorPrefs.GetFloat(nameof(padding));
             compression = (TextureImporterCompression) EditorPrefs.GetInt(nameof(compression));
             filterMode = (FilterMode) EditorPrefs.GetInt(nameof(filterMode));
@@ -88,7 +88,7 @@ namespace IconsCreationTool
 
             _workflowSerializedProperty = _serializedObject.FindProperty(nameof(userWorkflow));
             _nameSerializedProperty = _serializedObject.FindProperty(nameof(name));
-            _resolutionSerializedProperty = _serializedObject.FindProperty(nameof(resolution));
+            _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
             _targetObjectSerializedProperty = _serializedObject.FindProperty(nameof(targetObject));
             _compressionSerializedProperty = _serializedObject.FindProperty(nameof(compression));
@@ -105,7 +105,7 @@ namespace IconsCreationTool
         private void Save()
         {
             EditorPrefs.SetString(nameof(name), name);
-            EditorPrefs.SetInt(nameof(resolution), resolution);
+            EditorPrefs.SetInt(nameof(size), size);
             EditorPrefs.SetFloat(nameof(padding), padding);
             EditorPrefs.SetInt(nameof(compression), (int) compression);
             EditorPrefs.SetInt(nameof(filterMode), (int) filterMode);
@@ -152,7 +152,7 @@ namespace IconsCreationTool
         private void DrawBasicSettings()
         {
             EditorGUILayout.PropertyField(_nameSerializedProperty);
-            EditorGUILayout.IntSlider(_resolutionSerializedProperty, 1, 1024);
+            EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
             EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
 
             _compatibleTargetProvider.SetPreviousTarget(targetObject);
@@ -219,7 +219,7 @@ namespace IconsCreationTool
             SetTargetReferenceCompatibleWithWorkflow();
 
             IconsCreatorData data =
-                new IconsCreatorData(userWorkflow, resolution, padding, name, compression, filterMode, targetObject);
+                new IconsCreatorData(userWorkflow, size, padding, name, compression, filterMode, targetObject);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();
@@ -257,9 +257,10 @@ namespace IconsCreationTool
             
             _previewTexture.Reinitialize(PREVIEW_SIZE, PREVIEW_SIZE, _previewTexture.graphicsFormat, false);
             _previewTexture.filterMode = filterMode;
+
             _previewTexture.ReadPixels(new Rect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE), 0, 0);
             _previewTexture.Apply();
-            
+
             RenderTexture.ReleaseTemporary(temporaryRenderTexture);
         }
 
