@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using IconsCreationTool.Utility.Helpers;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -26,10 +27,11 @@ namespace IconsCreationTool
         public void InitializeEnvironment()
         {
             AddIconsCreationCameraTag();
+            LayersHelper.CreateLayer("IconsCreatorTargets");
             _sceneHandler.CreateSceneIfItDoesNotExist(_cameraUtility.IconsCreationCameraTag);
         }
-        
-        
+
+
         private void AddIconsCreationCameraTag()
         {
             if (!InternalEditorUtility.tags.Contains(_cameraUtility.IconsCreationCameraTag))

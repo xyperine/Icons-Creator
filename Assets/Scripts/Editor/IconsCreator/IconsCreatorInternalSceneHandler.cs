@@ -10,6 +10,7 @@ namespace IconsCreationTool
 {
     public class IconsCreatorInternalSceneHandler
     {
+        private const string ICONS_CREATOR_TARGETS_LAYER_NAME = "IconsCreatorTargets";
         private const string SCENE_NAME = "TestScene";
         private readonly string _relativeScenePath = $"Assets/Scenes/{SCENE_NAME}.unity";
 
@@ -38,7 +39,8 @@ namespace IconsCreationTool
             Scene prevActiveScene = EditorSceneManager.GetActiveScene();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
             scene.name = SCENE_NAME;
-            EditorSceneManager.SetSceneCullingMask(scene,1 << 6);
+            ulong targetLayer = (ulong) LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
+            EditorSceneManager.SetSceneCullingMask(scene, targetLayer);
 
             SetupSceneComponents(scene);
 
@@ -66,7 +68,7 @@ namespace IconsCreationTool
                     camera.gameObject.tag = _iconsCreationCameraTag;
                     camera.clearFlags = CameraClearFlags.Nothing;
                     camera.orthographic = true;
-                    camera.cullingMask = 1 << 6;
+                    camera.cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 }
 
                 light ??= rootGameObject.GetComponentInChildren<Light>();
@@ -99,10 +101,11 @@ namespace IconsCreationTool
             try
             {
                 GameObject target = PlaceTarget(targetObject);
-                target.layer = 6;
+                int layer = LayerMask.NameToLayer(ICONS_CREATOR_TARGETS_LAYER_NAME);
+                target.layer = layer;
                 foreach (Transform transform in target.transform)
                 {
-                    transform.gameObject.layer = 6;
+                    transform.gameObject.layer = layer;
                 }
 
                 action?.Invoke(target);
