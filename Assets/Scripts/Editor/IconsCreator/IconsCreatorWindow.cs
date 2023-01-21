@@ -11,7 +11,7 @@ namespace IconsCreationTool
     public class IconsCreatorWindow : EditorWindow
     {
         [SerializeField] private IconBackground backgroundType;
-        [SerializeField] private Color backgroundColor;
+        [SerializeField] private Color backgroundColor = Color.white;
         [SerializeField] private Texture2D backgroundTexture;
         
         [SerializeField] private string prefix;
@@ -27,11 +27,12 @@ namespace IconsCreationTool
         private const int PREVIEW_SIZE = 256;
         
         private readonly IconsCreator _iconsCreator = new IconsCreator();
-
+        
+        private Vector2 _scrollPosition;
         private bool _advancedSettingsUnfolded;
-
+        
         private Texture2D _previewTexture;
-
+        
         private bool AnyTargets => targets.ExtractAllGameObjects().Any();
 
         #region --- Window name ---
@@ -130,28 +131,35 @@ namespace IconsCreationTool
 
         protected void OnGUI()
         {
+            using GUILayout.ScrollViewScope scrollView = new GUILayout.ScrollViewScope(_scrollPosition);
+            _scrollPosition = scrollView.scrollPosition;
+                
             _serializedObject.Update();
 
             DrawSettings();
             
             GUILayout.Space(8f);
 
-            DrawButtons();
-                
+            DrawTargetsProperties();
+            
             GUILayout.Space(8f);
 
             if (_serializedObject.ApplyModifiedProperties())
             {
                 UpdateIconsCreator();
             }
-
+            
             DrawPreview();
+            
+            GUILayout.Space(8f);
+            
+            DrawCreateIconButton();
         }
 
 
         private void DrawSettings()
         {
-            using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new GUILayout.VerticalScope(new GUIStyle(EditorStyles.helpBox)))
             {
                 GUILayout.Label("Settings", EditorStyles.boldLabel);
                 GUILayout.Space(4f);
@@ -161,6 +169,8 @@ namespace IconsCreationTool
                 GUILayout.Space(8f);
 
                 DrawAdvancedSettings();
+                
+                GUILayout.Space(8f);
             }
         }
 
@@ -169,86 +179,143 @@ namespace IconsCreationTool
         {
             DrawBackgroundOptions();
 
-            GUILayout.Space(4f);
+            GUILayout.Space(8f);
 
-            EditorGUILayout.PropertyField(_prefixSerializedProperty);
-            EditorGUILayout.PropertyField(_suffixSerializedProperty);
-            EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
-            EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
+            DrawNamingProperties();
+            
+            GUILayout.Space(8f);
 
-            DrawTargetsProperty();
+            DrawSizingProperties();
         }
 
 
         private void DrawBackgroundOptions()
         {
-            using (new GUILayout.HorizontalScope())
+            using (new GUILayout.VerticalScope())
             {
-                GUILayout.Label("Background");
+                GUILayout.Label("Background", new GUIStyle(EditorStyles.boldLabel));
 
-                Undo.RecordObject(this, TITLE);
-                backgroundType =
-                    (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
-                _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
-            }
+                using (new GUILayout.HorizontalScope())
+                {
+                    GUILayout.Label("Type");
+                    
+                    Undo.RecordObject(this, TITLE);
+                    backgroundType =
+                        (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
+                    _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
+                }
+                
+                GUILayout.Space(4f);
 
-            switch (backgroundType)
-            {
-                case IconBackground.None:
-                    break;
+                switch (backgroundType)
+                {
+                    case IconBackground.None:
+                        break;
                 
-                case IconBackground.Color:
-                    EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
-                    break;
+                    case IconBackground.Color:
+                        EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
+                        break;
                 
-                case IconBackground.Texture:
-                    EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
-                    break;
+                    case IconBackground.Texture:
+                        EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
+                        break;
                 
-                default:
-                    throw new ArgumentOutOfRangeException();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+                GUILayout.Space(4f);
             }
         }
 
 
-        private void DrawTargetsProperty()
+        private void DrawNamingProperties()
         {
-            EditorGUILayout.PropertyField(_targetsObjectSerializedProperty);
-            int targetsCount = _targetsObjectSerializedProperty.arraySize;
-            for (int i = 0; i < targetsCount; i++)
+            using (new GUILayout.VerticalScope())
             {
-                SerializedProperty targetProperty = _targetsObjectSerializedProperty.GetArrayElementAtIndex(i);
-                Object target = targetProperty.objectReferenceValue;
-                if (!target)
-                {
-                    continue;
-                }
+                GUILayout.Label("Naming", new GUIStyle(EditorStyles.boldLabel));
+                
+                EditorGUILayout.PropertyField(_prefixSerializedProperty);
+                EditorGUILayout.PropertyField(_suffixSerializedProperty);
+                
+                GUILayout.Space(4f);
+            }
+        }
 
-                bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
-                if (!isAllowedType)
-                {
-                    Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
-                    targetProperty.objectReferenceValue = null;
-                    continue;
-                }
 
-                GameObject targetObject = target as GameObject;
-                if (targetObject)
+        private void DrawSizingProperties()
+        {
+            using (new GUILayout.VerticalScope())
+            {
+                GUILayout.Label("Sizing", new GUIStyle(EditorStyles.boldLabel));
+
+                EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
+                EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
+            }
+        }
+
+
+        private void DrawTargetsProperties()
+        {
+            using (new GUILayout.VerticalScope(new GUIStyle(EditorStyles.helpBox)))
+            {
+                GUILayout.Label("Targets", new GUIStyle(EditorStyles.boldLabel));
+
+                GUIContent content = new GUIContent("List");
+                EditorGUILayout.PropertyField(_targetsObjectSerializedProperty, content);
+                int targetsCount = _targetsObjectSerializedProperty.arraySize;
+                for (int i = 0; i < targetsCount; i++)
                 {
-                    bool isSceneObject = targetObject.scene.IsValid();
-                    if (isSceneObject)
+                    SerializedProperty targetProperty = _targetsObjectSerializedProperty.GetArrayElementAtIndex(i);
+                    Object target = targetProperty.objectReferenceValue;
+                    if (!target)
                     {
                         continue;
                     }
+
+                    bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
+                    if (!isAllowedType)
+                    {
+                        Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
+                        targetProperty.objectReferenceValue = null;
+                        continue;
+                    }
+
+                    GameObject targetObject = target as GameObject;
+                    if (targetObject)
+                    {
+                        bool isSceneObject = targetObject.scene.IsValid();
+                        if (isSceneObject)
+                        {
+                            continue;
+                        }
+                    }
+
+                    bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
+                    if (!isInAssetsFolder)
+                    {
+                        Debug.LogWarning("Select scene object or an asset from Assets folder!");
+                        targetProperty.objectReferenceValue = null;
+                    }
                 }
 
-                bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
-                if (!isInAssetsFolder)
+                if (targets.Any(t => !t) || targets.Distinct().Count() < targets.Count)
                 {
-                    Debug.LogWarning("Select scene object or an asset from Assets folder!");
-                    targetProperty.objectReferenceValue = null;
+                    if (GUILayout.Button("Remove invalid elements"))
+                    {
+                        RemoveInvalidTargetReferences();
+                    }
                 }
+                
+                GUILayout.Space(4f);
             }
+        }
+
+
+        private void RemoveInvalidTargetReferences()
+        {
+            targets?.RemoveAll(t => !t);
+            targets = targets?.Distinct().ToList();
         }
 
 
@@ -268,28 +335,30 @@ namespace IconsCreationTool
                     EditorGUILayout.PropertyField(_compressionSerializedProperty);
                     EditorGUILayout.PropertyField(_filterModeSerializedProperty);
                 }
+                
+                GUILayout.Space(4f);
             }
         }
 
 
-        private void DrawButtons()
+        private void DrawCreateIconButton()
         {
             using (new EditorGUI.DisabledScope(!AnyTargets))
             {
-                using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+                GUILayout.Space(4f);
+                
+                string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
+                    "Create Icons" : "Create Icon";
+                GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+                    {fixedHeight = 32, fontSize = 16, fontStyle = FontStyle.Bold};
+                if (GUILayout.Button(buttonText, buttonStyle))
                 {
-                    GUILayout.Label("Actions", EditorStyles.boldLabel);
-                    
-                    GUILayout.Space(4f);
-                    string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
-                        "Create Icons" : "Create Icon";
-                    
-                    if (GUILayout.Button(buttonText))
-                    {
-                        UpdateIconsCreator();
-                        _iconsCreator.CreateIcon();
-                    }
+                    RemoveInvalidTargetReferences();
+                    UpdateIconsCreator();
+                    _iconsCreator.CreateIcon();
                 }
+
+                GUILayout.Space(8f);
             }
         }
 
