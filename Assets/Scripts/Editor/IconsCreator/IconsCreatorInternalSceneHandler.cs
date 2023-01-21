@@ -103,7 +103,7 @@ namespace IconsCreationTool
                 GameObject target = PlaceTarget(targetObject);
                 int layer = LayerMask.NameToLayer(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 target.layer = layer;
-                foreach (Transform transform in target.transform)
+                foreach (Transform transform in target.GetComponentsInChildren<Transform>())
                 {
                     transform.gameObject.layer = layer;
                 }
