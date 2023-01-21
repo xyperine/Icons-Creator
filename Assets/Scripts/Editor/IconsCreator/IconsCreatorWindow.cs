@@ -1,4 +1,5 @@
 ﻿using System;
+using IconsCreationTool.Utility.Extensions;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,10 @@ namespace IconsCreationTool
 {
     public class IconsCreatorWindow : EditorWindow
     {
+        [SerializeField] private IconBackground backgroundType;
+        [SerializeField] private Color backgroundColor;
+        [SerializeField] private Texture2D backgroundTexture;
+
         [SerializeField] private new string name = "Icon";
         [SerializeField] private int size = 512;
         [SerializeField] private float padding;
@@ -34,9 +39,12 @@ namespace IconsCreationTool
         #endregion
         
         #region --- Serialized properties ---
-        
+
         private SerializedObject _serializedObject;
 
+        private SerializedProperty _backgroundTypeSerializedProperty;
+        private SerializedProperty _backgroundColorSerializedProperty;
+        private SerializedProperty _backgroundTextureSerializedProperty;
         private SerializedProperty _nameSerializedProperty;
         private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
@@ -82,6 +90,9 @@ namespace IconsCreationTool
         {
             _serializedObject = new SerializedObject(this);
             
+            _backgroundTypeSerializedProperty = _serializedObject.FindProperty(nameof(backgroundType));
+            _backgroundColorSerializedProperty = _serializedObject.FindProperty(nameof(backgroundColor));
+            _backgroundTextureSerializedProperty = _serializedObject.FindProperty(nameof(backgroundTexture));
             _nameSerializedProperty = _serializedObject.FindProperty(nameof(name));
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
@@ -146,13 +157,48 @@ namespace IconsCreationTool
 
         private void DrawBasicSettings()
         {
+            DrawBackgroundOptions();
+
+            GUILayout.Space(4f);
+            
             EditorGUILayout.PropertyField(_nameSerializedProperty);
             EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
             EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
             
             EditorGUILayout.ObjectField(_targetObjectSerializedProperty);
         }
-        
+
+
+        private void DrawBackgroundOptions()
+        {
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.Label("Background");
+
+                Undo.RecordObject(this, TITLE);
+                backgroundType =
+                    (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
+                _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
+            }
+
+            switch (backgroundType)
+            {
+                case IconBackground.None:
+                    break;
+                
+                case IconBackground.Color:
+                    EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
+                    break;
+                
+                case IconBackground.Texture:
+                    EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
 
         private void DrawAdvancedSettings()
         {
@@ -195,8 +241,9 @@ namespace IconsCreationTool
 
         private void OnDataChanged()
         {
+            IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, name, compression, filterMode, targetObject);
+                new IconsCreatorData(size, padding, name, compression, filterMode, backgroundData, targetObject);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using IconsCreationTool.Utility.Helpers;
 using UnityEditorInternal;
 using UnityEngine;
@@ -80,6 +81,7 @@ namespace IconsCreationTool
         {
             _cameraUtility.SetData(target, _data.Size, _data.Padding);
             _cameraUtility.RetrieveCamera();
+            _cameraUtility.SetBackground(_data.BackgroundData);
             _cameraUtility.AdjustCamera();
             _cameraUtility.AdjustCamera();
             

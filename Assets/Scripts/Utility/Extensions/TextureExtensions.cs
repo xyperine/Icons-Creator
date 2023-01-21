@@ -12,16 +12,16 @@ namespace IconsCreationTool.Utility.Extensions
             RenderTexture.active = temporaryRenderTexture;
             
             Graphics.Blit(texture, temporaryRenderTexture);
-            
-            texture.Reinitialize(targetSize, targetSize, texture.graphicsFormat, false);
-            texture.filterMode = filterMode;
 
-            texture.ReadPixels(new Rect(0, 0, targetSize, targetSize), 0, 0);
-            texture.Apply();
+            Texture2D resizedTexture = new Texture2D(targetSize, targetSize);
+            resizedTexture.filterMode = filterMode;
+
+            resizedTexture.ReadPixels(new Rect(0, 0, targetSize, targetSize), 0, 0);
+            resizedTexture.Apply();
 
             RenderTexture.ReleaseTemporary(temporaryRenderTexture);
 
-            return texture;
+            return resizedTexture;
         }
     }
 }

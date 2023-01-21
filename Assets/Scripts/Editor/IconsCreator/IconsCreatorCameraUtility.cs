@@ -16,7 +16,9 @@ namespace IconsCreationTool
 
         private int _size;
         private float _padding;
-        
+
+        private IconBackgroundData _backgroundData;
+
         private float _distanceToTarget = 10f;
 
         private Vector3 CameraOffset => -_camera.transform.forward * _distanceToTarget;
@@ -26,13 +28,13 @@ namespace IconsCreationTool
         public void RetrieveCamera()
         {
             Scene activeScene = EditorSceneManager.GetActiveScene();
-            
+
             if (_camera)
             {
                 bool isInValidScene = _camera.scene == activeScene;
                 bool isTagged = _camera.gameObject.CompareTag(ICONS_CREATION_CAMERA_TAG);
 
-                if (isInValidScene && isTagged) 
+                if (isInValidScene && isTagged)
                 {
                     return;
                 }
@@ -45,12 +47,13 @@ namespace IconsCreationTool
                 {
                     continue;
                 }
+
                 if (camera.CompareTag(ICONS_CREATION_CAMERA_TAG))
                 {
                     _camera = camera;
                 }
             }
-            
+
             if (!_camera)
             {
                 Debug.LogWarning($"Something went wrong! No camera tagged \"{ICONS_CREATION_CAMERA_TAG}\" was found!");
@@ -67,10 +70,34 @@ namespace IconsCreationTool
             {
                 throw new ArgumentOutOfRangeException(nameof(size));
             }
-            
+
             _targetObject = targetObject;
             _size = size;
             _padding = padding;
+        }
+
+
+        public void SetBackground(IconBackgroundData backgroundData)
+        {
+            _backgroundData = backgroundData;
+            
+            switch (_backgroundData.Type)
+            {
+                case IconBackground.None:
+                    _camera.clearFlags = CameraClearFlags.Nothing;
+                    break;
+                
+                case IconBackground.Color:
+                    _camera.clearFlags = CameraClearFlags.SolidColor;
+                    _camera.backgroundColor = _backgroundData.Color;
+                    break;
+                
+                case IconBackground.Texture:
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
 
@@ -120,8 +147,19 @@ namespace IconsCreationTool
             {
                 throw new ArgumentOutOfRangeException(nameof(_size));
             }
+
+            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(_size, _size);
             
-            _camera.targetTexture = RenderTexture.GetTemporary(_size, _size);
+            if (_backgroundData.Type == IconBackground.Texture)
+            {
+                Texture2D backgroundTexture = _backgroundData.Texture;
+                if (backgroundTexture)
+                {
+                    Graphics.Blit(backgroundTexture, temporaryRenderTexture);
+                }
+            }
+
+            _camera.targetTexture = temporaryRenderTexture;
             RenderTexture.active = _camera.targetTexture;
 
             _camera.Render();
@@ -132,6 +170,8 @@ namespace IconsCreationTool
 
             _camera.targetTexture = null;
             RenderTexture.active = null;
+            
+            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
 
             return image;
         }

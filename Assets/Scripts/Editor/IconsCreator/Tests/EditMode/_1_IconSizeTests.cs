@@ -30,8 +30,9 @@ namespace IconsCreationTool.Tests
 
         private void SetSize(int size)
         {
+            IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
             IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_NAME,
-                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, _target);
+                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, _target);
             _iconsCreator.SetData(data);
         }
 

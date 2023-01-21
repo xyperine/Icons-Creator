@@ -10,17 +10,19 @@ namespace IconsCreationTool
         public string Name { get; }
         public TextureImporterCompression Compression { get; }
         public FilterMode FilterMode { get; }
+        public IconBackgroundData BackgroundData { get; }
         public GameObject TargetObject { get; }
 
 
         public IconsCreatorData(int size, float padding, string name, TextureImporterCompression compression,
-            FilterMode filterMode, GameObject targetObject)
+            FilterMode filterMode, IconBackgroundData backgroundData, GameObject targetObject)
         {
             Size = size;
             Padding = padding;
             Name = name;
             Compression = compression;
             FilterMode = filterMode;
+            BackgroundData = backgroundData;
             TargetObject = targetObject;
         }
     }

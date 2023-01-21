@@ -20,10 +20,11 @@ namespace IconsCreationTool.Tests
         [OneTimeSetUp]
         public void Initialize()
         {
+            IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             target.transform.position = new Vector3(1024f, 0f, 1024f);
             IconsCreatorData data = new IconsCreatorData(512, 0f, DESIRED_NAME,
-                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, target);
+                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, target);
             _iconsCreator.SetData(data);
 
             _iconsCreator.CreateIcon();
