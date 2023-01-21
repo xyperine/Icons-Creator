@@ -6,8 +6,6 @@ namespace IconsCreationTool
 {
     public class IconsCreatorWindow : EditorWindow
     {
-        [SerializeField] private IconsCreatorUserWorkflow userWorkflow;
-        
         [SerializeField] private new string name = "Icon";
         [SerializeField] private int size = 512;
         [SerializeField] private float padding;
@@ -18,8 +16,7 @@ namespace IconsCreationTool
         [SerializeField] private FilterMode filterMode = FilterMode.Bilinear;
 
         private const int PREVIEW_SIZE = 256;
-
-        private readonly IconsCreatorCompatibleTargetProvider _compatibleTargetProvider = new IconsCreatorCompatibleTargetProvider();
+        
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
         private bool _advancedSettingsUnfolded;
@@ -40,7 +37,6 @@ namespace IconsCreationTool
         
         private SerializedObject _serializedObject;
 
-        private SerializedProperty _workflowSerializedProperty;
         private SerializedProperty _nameSerializedProperty;
         private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
@@ -85,8 +81,7 @@ namespace IconsCreationTool
         private void SetupSerializedProperties()
         {
             _serializedObject = new SerializedObject(this);
-
-            _workflowSerializedProperty = _serializedObject.FindProperty(nameof(userWorkflow));
+            
             _nameSerializedProperty = _serializedObject.FindProperty(nameof(name));
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
@@ -154,26 +149,10 @@ namespace IconsCreationTool
             EditorGUILayout.PropertyField(_nameSerializedProperty);
             EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
             EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
-
-            _compatibleTargetProvider.SetPreviousTarget(targetObject);
+            
             EditorGUILayout.ObjectField(_targetObjectSerializedProperty);
-
-            DrawWorkflowToolbar();
         }
-
-
-        private void DrawWorkflowToolbar()
-        {
-            using (new GUILayout.VerticalScope())
-            {
-                GUILayout.Label("Workflow");
-
-                Undo.RecordObject(this, TITLE);
-                userWorkflow = (IconsCreatorUserWorkflow) GUILayout.Toolbar((int) userWorkflow, Enum.GetNames(typeof(IconsCreatorUserWorkflow)));
-                _workflowSerializedProperty.enumValueIndex = (int) userWorkflow;
-            }
-        }
-
+        
 
         private void DrawAdvancedSettings()
         {
@@ -216,27 +195,11 @@ namespace IconsCreationTool
 
         private void OnDataChanged()
         {
-            SetTargetReferenceCompatibleWithWorkflow();
-
             IconsCreatorData data =
-                new IconsCreatorData(userWorkflow, size, padding, name, compression, filterMode, targetObject);
+                new IconsCreatorData(size, padding, name, compression, filterMode, targetObject);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();
-        }
-
-
-        private void SetTargetReferenceCompatibleWithWorkflow()
-        {
-            if (_compatibleTargetProvider.IsObjectCompatibleWithWorkflow(targetObject, userWorkflow))
-            {
-                return;
-            }
-
-            GameObject target = _compatibleTargetProvider.GetTarget(userWorkflow);
-
-            _targetObjectSerializedProperty.objectReferenceValue = target;
-            targetObject = target;
         }
 
 

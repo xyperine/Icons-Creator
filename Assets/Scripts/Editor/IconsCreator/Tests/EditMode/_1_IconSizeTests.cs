@@ -1,16 +1,12 @@
 ﻿using System;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-namespace IconsCreationTool.Tests._1_Manual
+namespace IconsCreationTool.Tests
 {
     public class _1_IconSizeTests
     {
-        private const string MANUAL_SCENE_PATH = "Assets/Scenes/Icons Creation.unity";
-
         private const string DESIRED_NAME = "TestIcon";
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
@@ -27,27 +23,14 @@ namespace IconsCreationTool.Tests._1_Manual
         [OneTimeSetUp]
         public void Initialize()
         {
-            OpenManualScene();
-            
             _target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             _target.transform.position = new Vector3(1024f, 0f, 1024f);
         }
-        
-        
-        private void OpenManualScene()
-        {
-            Scene manualScene = EditorSceneManager.GetSceneByPath(MANUAL_SCENE_PATH);
-            if (!manualScene.isLoaded)
-            { 
-                manualScene = EditorSceneManager.OpenScene(MANUAL_SCENE_PATH);
-            }
-            EditorSceneManager.SetActiveScene(manualScene);
-        }
-        
+
 
         private void SetSize(int size)
         {
-            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Manual, size, 0f, DESIRED_NAME,
+            IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_NAME,
                 DESIRED_COMPRESSION, DESIRED_FILTER_MODE, _target);
             _iconsCreator.SetData(data);
         }

@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace IconsCreationTool.Tests._0_Auto
+namespace IconsCreationTool.Tests
 {
     public class _0_IconAssetValidityTests
     {
@@ -22,7 +22,7 @@ namespace IconsCreationTool.Tests._0_Auto
         {
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             target.transform.position = new Vector3(1024f, 0f, 1024f);
-            IconsCreatorData data = new IconsCreatorData(IconsCreatorUserWorkflow.Auto, 512, 0f, DESIRED_NAME,
+            IconsCreatorData data = new IconsCreatorData(512, 0f, DESIRED_NAME,
                 DESIRED_COMPRESSION, DESIRED_FILTER_MODE, target);
             _iconsCreator.SetData(data);
 

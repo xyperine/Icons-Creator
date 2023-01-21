@@ -53,7 +53,7 @@ namespace IconsCreationTool
             
             if (!_camera)
             {
-                Debug.LogWarning($"No camera found! Create camera object and tag it \"{ICONS_CREATION_CAMERA_TAG}\"");
+                Debug.LogWarning($"Something went wrong! No camera tagged \"{ICONS_CREATION_CAMERA_TAG}\" was found!");
                 return;
             }
 
