@@ -66,7 +66,8 @@ namespace IconsCreationTool
                 if (camera)
                 {
                     camera.gameObject.tag = _iconsCreationCameraTag;
-                    camera.clearFlags = CameraClearFlags.Nothing;
+                    camera.clearFlags = CameraClearFlags.SolidColor;
+                    camera.backgroundColor = Color.clear;
                     camera.orthographic = true;
                     camera.cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 }

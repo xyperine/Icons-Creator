@@ -94,6 +94,7 @@ namespace IconsCreationTool
                     break;
                 
                 case IconBackground.Texture:
+                    _camera.clearFlags = CameraClearFlags.Nothing;
                     break;
                 
                 default:

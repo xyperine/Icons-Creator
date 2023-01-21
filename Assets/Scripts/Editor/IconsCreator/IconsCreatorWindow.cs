@@ -32,6 +32,8 @@ namespace IconsCreationTool
 
         private Texture2D _previewTexture;
 
+        private bool AnyTargets => targets.ExtractAllGameObjects().Any();
+
         #region --- Window name ---
 
         private const string MENU_NAME = "Tools/Icons Creator";
@@ -140,7 +142,7 @@ namespace IconsCreationTool
 
             if (_serializedObject.ApplyModifiedProperties())
             {
-                OnDataChanged();
+                UpdateIconsCreator();
             }
 
             DrawPreview();
@@ -222,18 +224,28 @@ namespace IconsCreationTool
                     continue;
                 }
 
-                bool isAllowedType = target is GameObject or DefaultAsset;
+                bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
                 if (!isAllowedType)
                 {
-                    Debug.LogWarning("Asset must be either a folder or a GameObject!");
+                    Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
                     targetProperty.objectReferenceValue = null;
                     continue;
                 }
-                
+
+                GameObject targetObject = target as GameObject;
+                if (targetObject)
+                {
+                    bool isSceneObject = targetObject.scene.IsValid();
+                    if (isSceneObject)
+                    {
+                        continue;
+                    }
+                }
+
                 bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
                 if (!isInAssetsFolder)
                 {
-                    Debug.LogWarning("Select asset from Assets folder!");
+                    Debug.LogWarning("Select scene object or an asset from Assets folder!");
                     targetProperty.objectReferenceValue = null;
                 }
             }
@@ -262,16 +274,19 @@ namespace IconsCreationTool
 
         private void DrawButtons()
         {
-            using (new EditorGUI.DisabledScope(!targets.Any(t => t)))
+            using (new EditorGUI.DisabledScope(!AnyTargets))
             {
                 using (new GUILayout.VerticalScope(EditorStyles.helpBox))
                 {
                     GUILayout.Label("Actions", EditorStyles.boldLabel);
                     
                     GUILayout.Space(4f);
+                    string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
+                        "Create Icons" : "Create Icon";
                     
-                    if (GUILayout.Button("Create Icon"))
+                    if (GUILayout.Button(buttonText))
                     {
+                        UpdateIconsCreator();
                         _iconsCreator.CreateIcon();
                     }
                 }
@@ -279,7 +294,7 @@ namespace IconsCreationTool
         }
 
 
-        private void OnDataChanged()
+        private void UpdateIconsCreator()
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
@@ -292,11 +307,11 @@ namespace IconsCreationTool
 
         private void UpdatePreviewTexture()
         {
-            if (!targets.Any(t => t))
+            if (!AnyTargets)
             {
                 return;
             }
-
+            
             Texture2D cameraView = _iconsCreator.CameraView;
             cameraView.filterMode = filterMode;
 
@@ -306,7 +321,7 @@ namespace IconsCreationTool
 
         private void DrawPreview()
         {
-            if (!targets.Any(t => t))
+            if (!AnyTargets)
             {
                 return;
             }

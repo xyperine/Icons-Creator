@@ -12,6 +12,7 @@ namespace IconsCreationTool.Tests
         private const string DESIRED_NAME = "TestIcon";
         private const string DESIRED_PREFIX = "Test_";
         private const string DESIRED_SUFFIX = "_Icon";
+        private const string FULL_NAME = DESIRED_PREFIX + DESIRED_NAME + DESIRED_SUFFIX;
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
@@ -48,8 +49,7 @@ namespace IconsCreationTool.Tests
             _iconsCreator.CreateIcon();
 
             _textureImporter =
-                (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_PREFIX + DESIRED_NAME + DESIRED_SUFFIX +
-                                                          FILE_EXTENSION);
+                (TextureImporter) AssetImporter.GetAtPath(PATH + FULL_NAME + FILE_EXTENSION);
         }
         
         

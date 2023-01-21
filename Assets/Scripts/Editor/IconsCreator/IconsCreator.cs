@@ -14,6 +14,8 @@ namespace IconsCreationTool
         private readonly IconsCreatorCameraUtility _cameraUtility;
         private readonly IconsSaver _iconsSaver;
 
+        private bool AnyTargets => _data.Targets.Any(t => t);
+        
         public Texture2D CameraView { get; private set; }
 
 
@@ -57,7 +59,7 @@ namespace IconsCreationTool
 
         private void OnDataChanged()
         {
-            if (!_data.Targets.Any())
+            if (!AnyTargets)
             {
                 return;
             }
@@ -68,7 +70,7 @@ namespace IconsCreationTool
 
         private void UpdateCameraView()
         {
-            if (!_data.Targets.Any())
+            if (!AnyTargets)
             {
                 return;
             }
