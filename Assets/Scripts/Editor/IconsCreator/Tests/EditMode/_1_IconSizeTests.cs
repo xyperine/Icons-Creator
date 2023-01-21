@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace IconsCreationTool.Tests
 {
     public class _1_IconSizeTests
     {
         private const string DESIRED_NAME = "TestIcon";
+        private const string DESIRED_PREFIX = "Test_";
+        private const string DESIRED_SUFFIX = "_Icon";
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
@@ -15,7 +19,7 @@ namespace IconsCreationTool.Tests
 
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
-        private GameObject _target;
+        private List<Object> _targets;
 
         private TextureImporter _textureImporter;
 
@@ -23,16 +27,18 @@ namespace IconsCreationTool.Tests
         [OneTimeSetUp]
         public void Initialize()
         {
-            _target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            _target.transform.position = new Vector3(1024f, 0f, 1024f);
+            GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            target.name = DESIRED_NAME;
+            target.transform.position = new Vector3(1024f, 0f, 1024f);
+            _targets= new List<Object> {target};
         }
 
 
         private void SetSize(int size)
         {
             IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
-            IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_NAME,
-                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, _target);
+            IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX,
+                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, _targets);
             _iconsCreator.SetData(data);
         }
 
@@ -40,8 +46,10 @@ namespace IconsCreationTool.Tests
         private void CreateIcon()
         {
             _iconsCreator.CreateIcon();
-            
-            _textureImporter = (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_NAME + FILE_EXTENSION);
+
+            _textureImporter =
+                (TextureImporter) AssetImporter.GetAtPath(PATH + DESIRED_PREFIX + DESIRED_NAME + DESIRED_SUFFIX +
+                                                          FILE_EXTENSION);
         }
         
         

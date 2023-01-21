@@ -8,25 +8,27 @@ namespace IconsCreationTool
     {
         private const string DIRECTORY = "/Textures/Icons/";
         
-        private string _name;
+        private string _prefix;
+        private string _suffix;
         private TextureImporterCompression _compression;
         private FilterMode _filterMode;
         
 
-        public void SetData(string name, TextureImporterCompression compression, FilterMode filterMode)
+        public void SetData(string prefix, string suffix, TextureImporterCompression compression, FilterMode filterMode)
         {
-            _name = name;
+            _prefix = prefix;
+            _suffix = suffix;
             _compression = compression;
             _filterMode = filterMode;
         }
 
 
-        public void SaveIcon(Texture2D image)
+        public void SaveIcon(Texture2D image, string name)
         {
             byte[] bytes = image.EncodeToPNG();
             Object.DestroyImmediate(image);
 
-            string path = Application.dataPath + DIRECTORY + _name + ".png";
+            string path = Application.dataPath + DIRECTORY + _prefix + name + _suffix + ".png";
             if (!Directory.Exists(Application.dataPath + DIRECTORY))
             {
                 Directory.CreateDirectory(Application.dataPath + DIRECTORY);

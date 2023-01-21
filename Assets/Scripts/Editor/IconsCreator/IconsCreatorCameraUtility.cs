@@ -84,7 +84,8 @@ namespace IconsCreationTool
             switch (_backgroundData.Type)
             {
                 case IconBackground.None:
-                    _camera.clearFlags = CameraClearFlags.Nothing;
+                    _camera.clearFlags = CameraClearFlags.SolidColor;
+                    _camera.backgroundColor = Color.clear;
                     break;
                 
                 case IconBackground.Color:

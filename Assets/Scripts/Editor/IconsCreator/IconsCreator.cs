@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using IconsCreationTool.Utility.Helpers;
 using UnityEditorInternal;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace IconsCreationTool
 {
@@ -46,8 +46,8 @@ namespace IconsCreationTool
         {
             _data = data;
 
-            _cameraUtility.SetData(_data.TargetObject, _data.Size, _data.Padding);
-            _iconsSaver.SetData(_data.Name, _data.Compression, _data.FilterMode);
+            _cameraUtility.SetData(_data.Targets.FirstOrDefault(), _data.Size, _data.Padding);
+            _iconsSaver.SetData(_data.Prefix, _data.Suffix, _data.Compression, _data.FilterMode);
 
             Debug.Log("Data passed");
             
@@ -57,7 +57,7 @@ namespace IconsCreationTool
 
         private void OnDataChanged()
         {
-            if (!_data.TargetObject)
+            if (!_data.Targets.Any())
             {
                 return;
             }
@@ -68,12 +68,12 @@ namespace IconsCreationTool
 
         private void UpdateCameraView()
         {
-            if (!_data.TargetObject)
+            if (!_data.Targets.Any())
             {
                 return;
             }
 
-            _sceneHandler.InteractWithTarget(_data.TargetObject, AdjustCamera);
+            _sceneHandler.InteractWithTarget(_data.Targets[0], AdjustCamera);
         }
 
 
@@ -91,18 +91,21 @@ namespace IconsCreationTool
 
         public void CreateIcon()
         {
-            if (!_data.TargetObject)
+            if (!_data.Targets.Any())
             {
                 return;
             }
 
-            _sceneHandler.InteractWithTarget(_data.TargetObject, target =>
+            foreach (GameObject target in _data.Targets)
             {
-                AdjustCamera(target);
+                _sceneHandler.InteractWithTarget(target, t =>
+                {
+                    AdjustCamera(t);
             
-                Texture2D icon = _cameraUtility.CaptureCameraView();
-                _iconsSaver.SaveIcon(icon);
-            });
+                    Texture2D icon = _cameraUtility.CaptureCameraView();
+                    _iconsSaver.SaveIcon(icon, target.name);
+                });
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using IconsCreationTool.Utility.Extensions;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace IconsCreationTool
 {
@@ -10,12 +13,13 @@ namespace IconsCreationTool
         [SerializeField] private IconBackground backgroundType;
         [SerializeField] private Color backgroundColor;
         [SerializeField] private Texture2D backgroundTexture;
-
-        [SerializeField] private new string name = "Icon";
+        
+        [SerializeField] private string prefix;
+        [SerializeField] private string suffix;
         [SerializeField] private int size = 512;
         [SerializeField] private float padding;
-
-        [SerializeField] private GameObject targetObject;
+        
+        [SerializeField] private List<Object> targets = new List<Object>();
 
         [SerializeField] private TextureImporterCompression compression = TextureImporterCompression.Compressed;
         [SerializeField] private FilterMode filterMode = FilterMode.Bilinear;
@@ -45,10 +49,11 @@ namespace IconsCreationTool
         private SerializedProperty _backgroundTypeSerializedProperty;
         private SerializedProperty _backgroundColorSerializedProperty;
         private SerializedProperty _backgroundTextureSerializedProperty;
-        private SerializedProperty _nameSerializedProperty;
+        private SerializedProperty _prefixSerializedProperty;
+        private SerializedProperty _suffixSerializedProperty;
         private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
-        private SerializedProperty _targetObjectSerializedProperty;
+        private SerializedProperty _targetsObjectSerializedProperty;
         private SerializedProperty _compressionSerializedProperty;
         private SerializedProperty _filterModeSerializedProperty;
         
@@ -78,7 +83,8 @@ namespace IconsCreationTool
 
         private void Load()
         {
-            name = EditorPrefs.GetString(nameof(name));
+            prefix = EditorPrefs.GetString(nameof(prefix));
+            suffix = EditorPrefs.GetString(nameof(suffix));
             size = EditorPrefs.GetInt(nameof(size));
             padding = EditorPrefs.GetFloat(nameof(padding));
             compression = (TextureImporterCompression) EditorPrefs.GetInt(nameof(compression));
@@ -93,10 +99,11 @@ namespace IconsCreationTool
             _backgroundTypeSerializedProperty = _serializedObject.FindProperty(nameof(backgroundType));
             _backgroundColorSerializedProperty = _serializedObject.FindProperty(nameof(backgroundColor));
             _backgroundTextureSerializedProperty = _serializedObject.FindProperty(nameof(backgroundTexture));
-            _nameSerializedProperty = _serializedObject.FindProperty(nameof(name));
+            _prefixSerializedProperty = _serializedObject.FindProperty(nameof(prefix));
+            _suffixSerializedProperty = _serializedObject.FindProperty(nameof(suffix));
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
-            _targetObjectSerializedProperty = _serializedObject.FindProperty(nameof(targetObject));
+            _targetsObjectSerializedProperty = _serializedObject.FindProperty(nameof(targets));
             _compressionSerializedProperty = _serializedObject.FindProperty(nameof(compression));
             _filterModeSerializedProperty = _serializedObject.FindProperty(nameof(filterMode));
         }
@@ -110,7 +117,8 @@ namespace IconsCreationTool
 
         private void Save()
         {
-            EditorPrefs.SetString(nameof(name), name);
+            EditorPrefs.SetString(nameof(prefix), prefix);
+            EditorPrefs.SetString(nameof(suffix), suffix);
             EditorPrefs.SetInt(nameof(size), size);
             EditorPrefs.SetFloat(nameof(padding), padding);
             EditorPrefs.SetInt(nameof(compression), (int) compression);
@@ -160,12 +168,13 @@ namespace IconsCreationTool
             DrawBackgroundOptions();
 
             GUILayout.Space(4f);
-            
-            EditorGUILayout.PropertyField(_nameSerializedProperty);
+
+            EditorGUILayout.PropertyField(_prefixSerializedProperty);
+            EditorGUILayout.PropertyField(_suffixSerializedProperty);
             EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
             EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
-            
-            EditorGUILayout.ObjectField(_targetObjectSerializedProperty);
+
+            DrawTargetsProperty();
         }
 
 
@@ -200,6 +209,37 @@ namespace IconsCreationTool
         }
 
 
+        private void DrawTargetsProperty()
+        {
+            EditorGUILayout.PropertyField(_targetsObjectSerializedProperty);
+            int targetsCount = _targetsObjectSerializedProperty.arraySize;
+            for (int i = 0; i < targetsCount; i++)
+            {
+                SerializedProperty targetProperty = _targetsObjectSerializedProperty.GetArrayElementAtIndex(i);
+                Object target = targetProperty.objectReferenceValue;
+                if (!target)
+                {
+                    continue;
+                }
+
+                bool isAllowedType = target is GameObject or DefaultAsset;
+                if (!isAllowedType)
+                {
+                    Debug.LogWarning("Asset must be either a folder or a GameObject!");
+                    targetProperty.objectReferenceValue = null;
+                    continue;
+                }
+                
+                bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
+                if (!isInAssetsFolder)
+                {
+                    Debug.LogWarning("Select asset from Assets folder!");
+                    targetProperty.objectReferenceValue = null;
+                }
+            }
+        }
+
+
         private void DrawAdvancedSettings()
         {
             using (new GUILayout.VerticalScope(EditorStyles.helpBox))
@@ -222,7 +262,7 @@ namespace IconsCreationTool
 
         private void DrawButtons()
         {
-            using (new EditorGUI.DisabledScope(!targetObject))
+            using (new EditorGUI.DisabledScope(!targets.Any(t => t)))
             {
                 using (new GUILayout.VerticalScope(EditorStyles.helpBox))
                 {
@@ -243,7 +283,7 @@ namespace IconsCreationTool
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, name, compression, filterMode, backgroundData, targetObject);
+                new IconsCreatorData(size, padding, prefix, suffix, compression, filterMode, backgroundData, targets);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();
@@ -252,7 +292,7 @@ namespace IconsCreationTool
 
         private void UpdatePreviewTexture()
         {
-            if (!targetObject)
+            if (!targets.Any(t => t))
             {
                 return;
             }
@@ -266,7 +306,7 @@ namespace IconsCreationTool
 
         private void DrawPreview()
         {
-            if (!targetObject)
+            if (!targets.Any(t => t))
             {
                 return;
             }
