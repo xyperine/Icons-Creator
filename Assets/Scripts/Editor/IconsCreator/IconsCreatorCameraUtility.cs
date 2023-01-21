@@ -121,7 +121,7 @@ namespace IconsCreationTool
 
         private void SetRotation()
         {
-            _camera.transform.rotation = Quaternion.AngleAxis(45, Vector3.right);
+            _camera.transform.rotation = Quaternion.Euler(45f, -45f, 0f);
         }
         
 

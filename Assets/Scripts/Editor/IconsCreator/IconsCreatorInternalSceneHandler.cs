@@ -143,7 +143,7 @@ namespace IconsCreationTool
                 return null;
             }
 
-            GameObject target = Object.Instantiate(targetObject, Vector3.zero, Quaternion.AngleAxis(45f, Vector3.up));
+            GameObject target = Object.Instantiate(targetObject);
             return target;
         }
 
