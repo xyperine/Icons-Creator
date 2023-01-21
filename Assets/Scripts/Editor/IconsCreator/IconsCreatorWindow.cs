@@ -210,21 +210,10 @@ namespace IconsCreationTool
                 return;
             }
 
-            _previewTexture = _iconsCreator.CameraView;
-            _previewTexture.filterMode = filterMode;
-            
-            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(PREVIEW_SIZE, PREVIEW_SIZE);
-            RenderTexture.active = temporaryRenderTexture;
-            
-            Graphics.Blit(_previewTexture, temporaryRenderTexture);
-            
-            _previewTexture.Reinitialize(PREVIEW_SIZE, PREVIEW_SIZE, _previewTexture.graphicsFormat, false);
-            _previewTexture.filterMode = filterMode;
+            Texture2D cameraView = _iconsCreator.CameraView;
+            cameraView.filterMode = filterMode;
 
-            _previewTexture.ReadPixels(new Rect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE), 0, 0);
-            _previewTexture.Apply();
-
-            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
+            _previewTexture = cameraView.Resize(PREVIEW_SIZE);
         }
 
 
