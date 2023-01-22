@@ -138,11 +138,11 @@ namespace IconsCreationTool
 
             DrawSettings();
             
-            GUILayout.Space(8f);
+            IconsCreatorWindowElements.DrawRegularSpace();
 
             DrawTargetsProperties();
             
-            GUILayout.Space(8f);
+            IconsCreatorWindowElements.DrawRegularSpace();
 
             if (_serializedObject.ApplyModifiedProperties())
             {
@@ -151,7 +151,7 @@ namespace IconsCreationTool
             
             DrawPreview();
             
-            GUILayout.Space(8f);
+            IconsCreatorWindowElements.DrawRegularSpace();
             
             DrawCreateIconButton();
         }
@@ -159,18 +159,19 @@ namespace IconsCreationTool
 
         private void DrawSettings()
         {
-            using (new GUILayout.VerticalScope(new GUIStyle(EditorStyles.helpBox)))
+            using (IconsCreatorWindowElements.VerticalScopeBox)
             {
-                GUILayout.Label("Settings", EditorStyles.boldLabel);
-                GUILayout.Space(4f);
-
+                IconsCreatorWindowElements.DrawBoldLabel("Settings");
+                
+                IconsCreatorWindowElements.DrawSmallSpace();
+                
                 DrawBasicSettings();
             
-                GUILayout.Space(8f);
+                IconsCreatorWindowElements.DrawRegularSpace();
 
                 DrawAdvancedSettings();
                 
-                GUILayout.Space(8f);
+                IconsCreatorWindowElements.DrawRegularSpace();
             }
         }
 
@@ -179,11 +180,11 @@ namespace IconsCreationTool
         {
             DrawBackgroundOptions();
 
-            GUILayout.Space(8f);
+            IconsCreatorWindowElements.DrawRegularSpace();
 
             DrawNamingProperties();
             
-            GUILayout.Space(8f);
+            IconsCreatorWindowElements.DrawRegularSpace();
 
             DrawSizingProperties();
         }
@@ -191,11 +192,11 @@ namespace IconsCreationTool
 
         private void DrawBackgroundOptions()
         {
-            using (new GUILayout.VerticalScope())
+            using (IconsCreatorWindowElements.VerticalScope)
             {
-                GUILayout.Label("Background", new GUIStyle(EditorStyles.boldLabel));
+                IconsCreatorWindowElements.DrawBoldLabel("Background");
 
-                using (new GUILayout.HorizontalScope())
+                using (IconsCreatorWindowElements.HorizontalScope)
                 {
                     GUILayout.Label("Type");
                     
@@ -204,8 +205,8 @@ namespace IconsCreationTool
                         (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
                     _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
                 }
-                
-                GUILayout.Space(4f);
+
+                IconsCreatorWindowElements.DrawSmallSpace();
 
                 switch (backgroundType)
                 {
@@ -224,30 +225,30 @@ namespace IconsCreationTool
                         throw new ArgumentOutOfRangeException();
                 }
                 
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
 
 
         private void DrawNamingProperties()
         {
-            using (new GUILayout.VerticalScope())
+            using (IconsCreatorWindowElements.VerticalScope)
             {
-                GUILayout.Label("Naming", new GUIStyle(EditorStyles.boldLabel));
+                IconsCreatorWindowElements.DrawBoldLabel("Naming");
                 
                 EditorGUILayout.PropertyField(_prefixSerializedProperty);
                 EditorGUILayout.PropertyField(_suffixSerializedProperty);
                 
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
 
 
         private void DrawSizingProperties()
         {
-            using (new GUILayout.VerticalScope())
+            using (IconsCreatorWindowElements.VerticalScope)
             {
-                GUILayout.Label("Sizing", new GUIStyle(EditorStyles.boldLabel));
+                IconsCreatorWindowElements.DrawBoldLabel("Sizing");
 
                 EditorGUILayout.IntSlider(_sizeSerializedProperty, 1, 1024);
                 EditorGUILayout.Slider(_paddingSerializedProperty, 0f, 0.9f);
@@ -257,9 +258,9 @@ namespace IconsCreationTool
 
         private void DrawTargetsProperties()
         {
-            using (new GUILayout.VerticalScope(new GUIStyle(EditorStyles.helpBox)))
+            using (IconsCreatorWindowElements.VerticalScopeBox)
             {
-                GUILayout.Label("Targets", new GUIStyle(EditorStyles.boldLabel));
+                IconsCreatorWindowElements.DrawBoldLabel("Targets");
 
                 GUIContent content = new GUIContent("List");
                 EditorGUILayout.PropertyField(_targetsObjectSerializedProperty, content);
@@ -307,7 +308,7 @@ namespace IconsCreationTool
                     }
                 }
                 
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
 
@@ -321,7 +322,7 @@ namespace IconsCreationTool
 
         private void DrawAdvancedSettings()
         {
-            using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+            using (IconsCreatorWindowElements.VerticalScopeBox)
             {
                 _advancedSettingsUnfolded = EditorGUILayout.Foldout(_advancedSettingsUnfolded, "Advanced");
 
@@ -336,7 +337,7 @@ namespace IconsCreationTool
                     EditorGUILayout.PropertyField(_filterModeSerializedProperty);
                 }
                 
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
 
@@ -345,7 +346,7 @@ namespace IconsCreationTool
         {
             using (new EditorGUI.DisabledScope(!AnyTargets))
             {
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawSmallSpace();
                 
                 string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
                     "Create Icons" : "Create Icon";
@@ -358,7 +359,7 @@ namespace IconsCreationTool
                     _iconsCreator.CreateIcon();
                 }
 
-                GUILayout.Space(8f);
+                IconsCreatorWindowElements.DrawRegularSpace();
             }
         }
 
@@ -400,11 +401,11 @@ namespace IconsCreationTool
                 return;
             }
 
-            using (new GUILayout.VerticalScope(EditorStyles.helpBox))
+            using (IconsCreatorWindowElements.VerticalScopeBox)
             {
-                GUILayout.Label("Preview", EditorStyles.boldLabel);
-                
-                GUILayout.Space(4f);
+                IconsCreatorWindowElements.DrawBoldLabel("Preview");
+
+                IconsCreatorWindowElements.DrawSmallSpace();
 
                 GUIStyle boxStyle = new GUIStyle(GUI.skin.box) {margin = new RectOffset(32, 32, 32, 32)};
                 GUILayoutOption[] boxOptions = {GUILayout.Width(256f), GUILayout.Height(256f)};
