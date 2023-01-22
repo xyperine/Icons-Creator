@@ -198,7 +198,7 @@ namespace IconsCreationTool
 
                 using (IconsCreatorWindowElements.HorizontalScope)
                 {
-                    GUILayout.Label("Type");
+                    GUILayout.Label("Type", GUILayout.Width(EditorGUIUtility.labelWidth));
                     
                     Undo.RecordObject(this, TITLE);
                     backgroundType =
@@ -215,17 +215,17 @@ namespace IconsCreationTool
                 
                     case IconBackground.Color:
                         EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
+                        IconsCreatorWindowElements.DrawSmallSpace();
                         break;
                 
                     case IconBackground.Texture:
                         EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
+                        IconsCreatorWindowElements.DrawSmallSpace();
                         break;
                 
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
-                IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
 
@@ -344,6 +344,11 @@ namespace IconsCreationTool
 
         private void DrawCreateIconButton()
         {
+            if (!AnyTargets)
+            {
+                return;
+            }
+            
             using (new EditorGUI.DisabledScope(!AnyTargets))
             {
                 IconsCreatorWindowElements.DrawSmallSpace();
@@ -351,7 +356,7 @@ namespace IconsCreationTool
                 string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
                     "Create Icons" : "Create Icon";
                 GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
-                    {fixedHeight = 32, fontSize = 16, fontStyle = FontStyle.Bold};
+                    {fixedHeight = 28, fontSize = 13, fontStyle = FontStyle.Bold};
                 if (GUILayout.Button(buttonText, buttonStyle))
                 {
                     RemoveInvalidTargetReferences();
@@ -391,11 +396,6 @@ namespace IconsCreationTool
 
         private void DrawPreview()
         {
-            if (!AnyTargets)
-            {
-                return;
-            }
-            
             if (!_previewTexture)
             {
                 return;
