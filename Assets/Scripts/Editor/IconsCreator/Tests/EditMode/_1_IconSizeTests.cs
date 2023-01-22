@@ -180,7 +180,7 @@ namespace IconsCreationTool.Tests
         
         
         [Test]
-        public void Passing_Less_Than_1px_Size_To_CameraUtility_Should_Throw_ArgumentOutOfRangeException()
+        public void Trying_To_Make_Icon_Of_Less_Than_1px_Should_Throw_ArgumentOutOfRangeException()
         {
             const int size = -1;
             
