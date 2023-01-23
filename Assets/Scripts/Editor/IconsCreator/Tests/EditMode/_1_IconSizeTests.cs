@@ -16,7 +16,6 @@ namespace IconsCreationTool.Tests
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
-        private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
@@ -39,7 +38,7 @@ namespace IconsCreationTool.Tests
         {
             IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
             IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX,
-                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, _targets);
+                DESIRED_COMPRESSION, backgroundData, _targets);
             _iconsCreator.SetData(data);
         }
 

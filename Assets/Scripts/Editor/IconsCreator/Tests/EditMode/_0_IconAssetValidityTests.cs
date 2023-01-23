@@ -14,7 +14,6 @@ namespace IconsCreationTool.Tests
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
         private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
-        private const FilterMode DESIRED_FILTER_MODE = FilterMode.Point;
 
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
@@ -30,7 +29,7 @@ namespace IconsCreationTool.Tests
             target.transform.position = new Vector3(1024f, 0f, 1024f);
             List<Object> targets = new List<Object> {target};
             IconsCreatorData data = new IconsCreatorData(512, 0f, DESIRED_PREFIX, DESIRED_SUFFIX,
-                DESIRED_COMPRESSION, DESIRED_FILTER_MODE, backgroundData, targets);
+                DESIRED_COMPRESSION, backgroundData, targets);
             _iconsCreator.SetData(data);
 
             _iconsCreator.CreateIcon();
@@ -63,15 +62,6 @@ namespace IconsCreationTool.Tests
             TextureImporterType textureType = _textureImporter.textureType;
             
             Assert.AreEqual(TextureImporterType.Sprite, textureType);
-        }
-        
-        
-        [Test]
-        public void Asset_Should_Have_Expected_Filter_Mode()
-        {
-            FilterMode textureFilterMode = _textureImporter.filterMode;
-            
-            Assert.AreEqual(DESIRED_FILTER_MODE, textureFilterMode);
         }
 
 

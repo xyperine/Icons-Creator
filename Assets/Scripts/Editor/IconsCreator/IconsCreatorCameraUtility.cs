@@ -151,7 +151,7 @@ namespace IconsCreationTool
             }
 
             RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(_size, _size);
-            
+
             if (_backgroundData.Type == IconBackground.Texture)
             {
                 Texture2D backgroundTexture = _backgroundData.Texture;
@@ -169,7 +169,7 @@ namespace IconsCreationTool
             Texture2D image = new Texture2D(_size, _size);
             image.ReadPixels(new Rect(0, 0, _size, _size), 0, 0);
             image.Apply();
-
+            
             _camera.targetTexture = null;
             RenderTexture.active = null;
             

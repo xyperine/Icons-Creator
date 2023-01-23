@@ -15,14 +15,13 @@ namespace IconsCreationTool
         [SerializeField] private Texture2D backgroundTexture;
         
         [SerializeField] private string prefix;
-        [SerializeField] private string suffix;
+        [SerializeField] private string suffix = "_Icon";
         [SerializeField] private int size = 512;
         [SerializeField] private float padding;
         
         [SerializeField] private List<Object> targets = new List<Object>();
 
         [SerializeField] private TextureImporterCompression compression = TextureImporterCompression.Compressed;
-        [SerializeField] private FilterMode filterMode = FilterMode.Bilinear;
 
         private const int PREVIEW_SIZE = 256;
         
@@ -58,8 +57,7 @@ namespace IconsCreationTool
         private SerializedProperty _paddingSerializedProperty;
         private SerializedProperty _targetsObjectSerializedProperty;
         private SerializedProperty _compressionSerializedProperty;
-        private SerializedProperty _filterModeSerializedProperty;
-        
+
         #endregion
 
 
@@ -91,7 +89,6 @@ namespace IconsCreationTool
             size = EditorPrefs.GetInt(nameof(size));
             padding = EditorPrefs.GetFloat(nameof(padding));
             compression = (TextureImporterCompression) EditorPrefs.GetInt(nameof(compression));
-            filterMode = (FilterMode) EditorPrefs.GetInt(nameof(filterMode));
         }
 
 
@@ -108,7 +105,6 @@ namespace IconsCreationTool
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
             _targetsObjectSerializedProperty = _serializedObject.FindProperty(nameof(targets));
             _compressionSerializedProperty = _serializedObject.FindProperty(nameof(compression));
-            _filterModeSerializedProperty = _serializedObject.FindProperty(nameof(filterMode));
         }
 
 
@@ -125,7 +121,6 @@ namespace IconsCreationTool
             EditorPrefs.SetInt(nameof(size), size);
             EditorPrefs.SetFloat(nameof(padding), padding);
             EditorPrefs.SetInt(nameof(compression), (int) compression);
-            EditorPrefs.SetInt(nameof(filterMode), (int) filterMode);
         }
 
 
@@ -334,7 +329,6 @@ namespace IconsCreationTool
                 using (new EditorGUI.IndentLevelScope())
                 {
                     EditorGUILayout.PropertyField(_compressionSerializedProperty);
-                    EditorGUILayout.PropertyField(_filterModeSerializedProperty);
                 }
                 
                 IconsCreatorWindowElements.DrawSmallSpace();
@@ -373,7 +367,7 @@ namespace IconsCreationTool
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, prefix, suffix, compression, filterMode, backgroundData, targets);
+                new IconsCreatorData(size, padding, prefix, suffix, compression, backgroundData, targets);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();
@@ -388,7 +382,6 @@ namespace IconsCreationTool
             }
             
             Texture2D cameraView = _iconsCreator.CameraView;
-            cameraView.filterMode = filterMode;
 
             _previewTexture = cameraView.Resize(PREVIEW_SIZE);
         }
