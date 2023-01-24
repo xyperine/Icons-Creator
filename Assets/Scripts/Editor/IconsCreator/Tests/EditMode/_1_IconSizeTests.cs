@@ -15,7 +15,6 @@ namespace IconsCreationTool.Tests
         private const string FULL_NAME = DESIRED_PREFIX + DESIRED_NAME + DESIRED_SUFFIX;
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
-        private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
 
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
@@ -37,8 +36,8 @@ namespace IconsCreationTool.Tests
         private void SetSize(int size)
         {
             IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
-            IconsCreatorData data = new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX,
-                DESIRED_COMPRESSION, backgroundData, _targets);
+            IconsCreatorData data =
+                new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, _targets);
             _iconsCreator.SetData(data);
         }
 

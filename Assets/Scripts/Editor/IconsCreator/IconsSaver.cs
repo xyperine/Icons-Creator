@@ -10,14 +10,12 @@ namespace IconsCreationTool
         
         private string _prefix;
         private string _suffix;
-        private TextureImporterCompression _compression;
 
 
-        public void SetData(string prefix, string suffix, TextureImporterCompression compression)
+        public void SetData(string prefix, string suffix)
         {
             _prefix = prefix;
             _suffix = suffix;
-            _compression = compression;
         }
 
 
@@ -45,7 +43,6 @@ namespace IconsCreationTool
 
             TextureImporter textureImporter = (TextureImporter) AssetImporter.GetAtPath(relativePath);
             textureImporter.textureType = TextureImporterType.Sprite;
-            textureImporter.textureCompression = _compression;
             textureImporter.mipmapEnabled = false;
 
             textureImporter.SaveAndReimport();

@@ -13,7 +13,6 @@ namespace IconsCreationTool.Tests
         private const string FULL_NAME = DESIRED_PREFIX + DESIRED_NAME + DESIRED_SUFFIX;
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
-        private const TextureImporterCompression DESIRED_COMPRESSION = TextureImporterCompression.CompressedHQ;
 
         private readonly IconsCreator _iconsCreator = new IconsCreator();
 
@@ -28,8 +27,8 @@ namespace IconsCreationTool.Tests
             target.name = DESIRED_NAME;
             target.transform.position = new Vector3(1024f, 0f, 1024f);
             List<Object> targets = new List<Object> {target};
-            IconsCreatorData data = new IconsCreatorData(512, 0f, DESIRED_PREFIX, DESIRED_SUFFIX,
-                DESIRED_COMPRESSION, backgroundData, targets);
+            IconsCreatorData data =
+                new IconsCreatorData(512, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, targets);
             _iconsCreator.SetData(data);
 
             _iconsCreator.CreateIcon();
@@ -62,15 +61,6 @@ namespace IconsCreationTool.Tests
             TextureImporterType textureType = _textureImporter.textureType;
             
             Assert.AreEqual(TextureImporterType.Sprite, textureType);
-        }
-
-
-        [Test]
-        public void Asset_Should_Have_Expected_Compression()
-        {
-            TextureImporterCompression textureCompression = _textureImporter.textureCompression;
-            
-            Assert.AreEqual(DESIRED_COMPRESSION, textureCompression);
         }
     }
 }

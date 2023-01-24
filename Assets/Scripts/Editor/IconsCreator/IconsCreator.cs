@@ -49,7 +49,7 @@ namespace IconsCreationTool
             _data = data;
 
             _cameraUtility.SetData(_data.Targets.FirstOrDefault(), _data.Size, _data.Padding);
-            _iconsSaver.SetData(_data.Prefix, _data.Suffix, _data.Compression, _data.FilterMode);
+            _iconsSaver.SetData(_data.Prefix, _data.Suffix);
 
             Debug.Log("Data passed");
             

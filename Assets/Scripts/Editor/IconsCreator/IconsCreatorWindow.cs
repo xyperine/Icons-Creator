@@ -21,15 +21,12 @@ namespace IconsCreationTool
         
         [SerializeField] private List<Object> targets = new List<Object>();
 
-        [SerializeField] private TextureImporterCompression compression = TextureImporterCompression.Compressed;
-
         private const int PREVIEW_SIZE = 256;
         
         private readonly IconsCreator _iconsCreator = new IconsCreator();
         
         private Vector2 _scrollPosition;
-        private bool _advancedSettingsUnfolded;
-        
+
         private Texture2D _previewTexture;
         
         private bool AnyTargets => targets.ExtractAllGameObjects().Any();
@@ -56,7 +53,6 @@ namespace IconsCreationTool
         private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
         private SerializedProperty _targetsObjectSerializedProperty;
-        private SerializedProperty _compressionSerializedProperty;
 
         #endregion
 
@@ -88,7 +84,6 @@ namespace IconsCreationTool
             suffix = EditorPrefs.GetString(nameof(suffix));
             size = EditorPrefs.GetInt(nameof(size));
             padding = EditorPrefs.GetFloat(nameof(padding));
-            compression = (TextureImporterCompression) EditorPrefs.GetInt(nameof(compression));
         }
 
 
@@ -104,7 +99,6 @@ namespace IconsCreationTool
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
             _targetsObjectSerializedProperty = _serializedObject.FindProperty(nameof(targets));
-            _compressionSerializedProperty = _serializedObject.FindProperty(nameof(compression));
         }
 
 
@@ -120,7 +114,6 @@ namespace IconsCreationTool
             EditorPrefs.SetString(nameof(suffix), suffix);
             EditorPrefs.SetInt(nameof(size), size);
             EditorPrefs.SetFloat(nameof(padding), padding);
-            EditorPrefs.SetInt(nameof(compression), (int) compression);
         }
 
 
@@ -160,28 +153,18 @@ namespace IconsCreationTool
                 
                 IconsCreatorWindowElements.DrawSmallSpace();
                 
-                DrawBasicSettings();
+                DrawBackgroundOptions();
+
+                IconsCreatorWindowElements.DrawRegularSpace();
+
+                DrawNamingProperties();
             
                 IconsCreatorWindowElements.DrawRegularSpace();
 
-                DrawAdvancedSettings();
-                
+                DrawSizingProperties();
+
                 IconsCreatorWindowElements.DrawRegularSpace();
             }
-        }
-
-
-        private void DrawBasicSettings()
-        {
-            DrawBackgroundOptions();
-
-            IconsCreatorWindowElements.DrawRegularSpace();
-
-            DrawNamingProperties();
-            
-            IconsCreatorWindowElements.DrawRegularSpace();
-
-            DrawSizingProperties();
         }
 
 
@@ -315,27 +298,6 @@ namespace IconsCreationTool
         }
 
 
-        private void DrawAdvancedSettings()
-        {
-            using (IconsCreatorWindowElements.VerticalScopeBox)
-            {
-                _advancedSettingsUnfolded = EditorGUILayout.Foldout(_advancedSettingsUnfolded, "Advanced");
-
-                if (!_advancedSettingsUnfolded)
-                {
-                    return;
-                }
-
-                using (new EditorGUI.IndentLevelScope())
-                {
-                    EditorGUILayout.PropertyField(_compressionSerializedProperty);
-                }
-                
-                IconsCreatorWindowElements.DrawSmallSpace();
-            }
-        }
-
-
         private void DrawCreateIconButton()
         {
             if (!AnyTargets)
@@ -367,7 +329,7 @@ namespace IconsCreationTool
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, prefix, suffix, compression, backgroundData, targets);
+                new IconsCreatorData(size, padding, prefix, suffix, backgroundData, targets);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();
@@ -401,7 +363,7 @@ namespace IconsCreationTool
                 IconsCreatorWindowElements.DrawSmallSpace();
 
                 GUIStyle boxStyle = new GUIStyle(GUI.skin.box) {margin = new RectOffset(32, 32, 32, 32)};
-                GUILayoutOption[] boxOptions = {GUILayout.Width(256f), GUILayout.Height(256f)};
+                GUILayoutOption[] boxOptions = {GUILayout.Width(PREVIEW_SIZE), GUILayout.Height(PREVIEW_SIZE)};
                 GUILayout.Box(_previewTexture, boxStyle, boxOptions);
             }
         }
