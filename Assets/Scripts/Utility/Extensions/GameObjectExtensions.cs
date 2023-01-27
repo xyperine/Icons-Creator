@@ -1,5 +1,4 @@
-﻿using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace IconsCreationTool.Utility.Extensions
 {
@@ -44,15 +43,35 @@ namespace IconsCreationTool.Utility.Extensions
         }
 
 
-        public static string GetFullName (this GameObject gameObject) {
-            StringBuilder nameBuilder = new StringBuilder(gameObject.name);
+        public static bool HasVisibleMesh(this GameObject gameObject)
+        {
+            bool hasVisibleMesh = false;
+            MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
             
-            while (gameObject.transform.parent != null) {
-                gameObject = gameObject.transform.parent.gameObject;
-                nameBuilder.AppendJoin('/', gameObject.name);
+            foreach (MeshFilter meshFilter in meshFilters)
+            {
+                if (!meshFilter)
+                {
+                    continue;
+                }
+
+                bool hasMesh = meshFilter.sharedMesh;
+                if (!hasMesh)
+                {
+                    continue;
+                }
+
+                bool hasRendererForMesh = meshFilter.GetComponent<MeshRenderer>();
+                if (!hasRendererForMesh)
+                {
+                    continue;
+                }
+                
+                hasVisibleMesh = true;
+                break;
             }
-            
-            return nameBuilder.ToString();
+
+            return hasVisibleMesh;
         }
     }
 }

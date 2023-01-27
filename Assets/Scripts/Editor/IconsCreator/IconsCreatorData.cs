@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using IconsCreationTool.Utility.Extensions;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace IconsCreationTool
         public string Prefix { get; }
         public string Suffix { get; }
         public IconBackgroundData BackgroundData { get; }
-        public List<GameObject> Targets { get; }
+        public GameObject[] Targets { get; }
 
 
         public IconsCreatorData(int size, float padding, string prefix, string suffix,
@@ -22,7 +23,7 @@ namespace IconsCreationTool
             Prefix = prefix;
             Suffix = suffix;
             BackgroundData = backgroundData;
-            Targets = targets.ExtractAllGameObjects();
+            Targets = targets.ExtractAllGameObjects().Where(g => g.HasVisibleMesh()).ToArray();
         }
     }
 }

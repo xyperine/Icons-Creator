@@ -29,7 +29,7 @@ namespace IconsCreationTool
 
         private Texture2D _previewTexture;
         
-        private bool AnyTargets => targets.ExtractAllGameObjects().Any();
+        private bool AnyTargets => targets.ExtractAllGameObjects().Where(g => g.HasVisibleMesh()).ToList().Any();
 
         #region --- Window name ---
 
@@ -246,36 +246,7 @@ namespace IconsCreationTool
                 for (int i = 0; i < targetsCount; i++)
                 {
                     SerializedProperty targetProperty = _targetsObjectSerializedProperty.GetArrayElementAtIndex(i);
-                    Object target = targetProperty.objectReferenceValue;
-                    if (!target)
-                    {
-                        continue;
-                    }
-
-                    bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
-                    if (!isAllowedType)
-                    {
-                        Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
-                        targetProperty.objectReferenceValue = null;
-                        continue;
-                    }
-
-                    GameObject targetObject = target as GameObject;
-                    if (targetObject)
-                    {
-                        bool isSceneObject = targetObject.scene.IsValid();
-                        if (isSceneObject)
-                        {
-                            continue;
-                        }
-                    }
-
-                    bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
-                    if (!isInAssetsFolder)
-                    {
-                        Debug.LogWarning("Select scene object or an asset from Assets folder!");
-                        targetProperty.objectReferenceValue = null;
-                    }
+                    ValidateTargetProperty(targetProperty);
                 }
 
                 if (targets.Any(t => !t) || targets.Distinct().Count() < targets.Count)
@@ -287,6 +258,60 @@ namespace IconsCreationTool
                 }
                 
                 IconsCreatorWindowElements.DrawSmallSpace();
+            }
+        }
+
+
+        private void ValidateTargetProperty(SerializedProperty targetProperty)
+        {
+            Object target = targetProperty.objectReferenceValue;
+            if (!target)
+            {
+                return;
+            }
+
+            bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
+            if (!isAllowedType)
+            {
+                Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
+                targetProperty.objectReferenceValue = null;
+                return;
+            }
+
+            GameObject targetObject = target as GameObject;
+            if (targetObject)
+            {
+                string objectName = targetObject.name;
+
+                bool objectHasRenderingComponents = targetObject.GetComponentInChildren<MeshRenderer>() && 
+                                                    targetObject.GetComponentInChildren<MeshFilter>();
+                if (!objectHasRenderingComponents)
+                {
+                    Debug.LogWarning($"{objectName} must have active MeshFilter and MeshRenderer components in its hierarchy!");
+                    targetProperty.objectReferenceValue = null;
+                    return;
+                }
+
+                bool objectHasAtLeastOneMesh = targetObject.GetComponentsInChildren<MeshFilter>().Any(f => f.sharedMesh);
+                if (!objectHasAtLeastOneMesh)
+                {
+                    Debug.LogWarning($"{objectName} must have at least one MeshFilter with mesh in its hierarchy!");
+                    targetProperty.objectReferenceValue = null;
+                    return;
+                }
+                
+                bool isSceneObject = targetObject.scene.IsValid();
+                if (isSceneObject)
+                {
+                    return;
+                }
+            }
+
+            bool isInAssetsFolder = AssetDatabase.GetAssetPath(target)[..6] == "Assets";
+            if (!isInAssetsFolder)
+            {
+                Debug.LogWarning("Select scene object or an asset from Assets folder!");
+                targetProperty.objectReferenceValue = null;
             }
         }
 
@@ -309,7 +334,7 @@ namespace IconsCreationTool
             {
                 IconsCreatorWindowElements.DrawSmallSpace();
                 
-                string buttonText = targets.ExtractAllGameObjects().Count > 1 ?
+                string buttonText = targets.ExtractAllGameObjects().Where(g => g.HasVisibleMesh()).ToList().Count > 1 ?
                     "Create Icons" : "Create Icon";
                 GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
                     {fixedHeight = 28, fontSize = 13, fontStyle = FontStyle.Bold};
@@ -340,6 +365,7 @@ namespace IconsCreationTool
         {
             if (!AnyTargets)
             {
+                _previewTexture = null;
                 return;
             }
             
