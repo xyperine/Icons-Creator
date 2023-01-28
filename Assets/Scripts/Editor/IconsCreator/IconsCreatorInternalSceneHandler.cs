@@ -11,7 +11,7 @@ namespace IconsCreationTool
     public class IconsCreatorInternalSceneHandler
     {
         private const string ICONS_CREATOR_TARGETS_LAYER_NAME = "IconsCreatorTargets";
-        private const string SCENE_NAME = "TestScene";
+        private const string SCENE_NAME = "Icons_Creation";
         private readonly string _relativeScenePath = $"Assets/Scenes/{SCENE_NAME}.unity";
 
         private Scene _openedScene;

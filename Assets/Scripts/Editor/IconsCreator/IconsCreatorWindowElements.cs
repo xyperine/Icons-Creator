@@ -12,7 +12,6 @@ namespace IconsCreationTool
         private static readonly GUIStyle ScopeBoxStyle = new GUIStyle(EditorStyles.helpBox);
 
         public static GUILayout.HorizontalScope HorizontalScope => new GUILayout.HorizontalScope();
-        public static GUILayout.HorizontalScope HorizontalScopeBox => new GUILayout.HorizontalScope(ScopeBoxStyle);
         public static GUILayout.VerticalScope VerticalScope => new GUILayout.VerticalScope();
         public static GUILayout.VerticalScope VerticalScopeBox => new GUILayout.VerticalScope(ScopeBoxStyle);
         
