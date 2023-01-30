@@ -19,8 +19,9 @@ namespace IconsCreationTool.Editor.Core
         [SerializeField] private int size = 512;
         [SerializeField] private float padding;
         
-        [SerializeField] private List<Object> targets = new List<Object>();
         [SerializeField] private bool renderShadows;
+
+        [SerializeField] private List<Object> targets = new List<Object>();
 
         private const int PREVIEW_SIZE = 256;
         
@@ -307,7 +308,7 @@ namespace IconsCreationTool.Editor.Core
                                                     targetObject.GetComponentInChildren<MeshFilter>();
                 if (!objectHasRenderingComponents)
                 {
-                    Debug.LogWarning($"{objectName} must have active MeshFilter and MeshRenderer components in its hierarchy!");
+                    Debug.LogWarning($"Game object \"{objectName}\" must have active MeshFilter and MeshRenderer components in its hierarchy!");
                     targetProperty.objectReferenceValue = null;
                     return;
                 }
@@ -315,7 +316,7 @@ namespace IconsCreationTool.Editor.Core
                 bool objectHasAtLeastOneMesh = targetObject.GetComponentsInChildren<MeshFilter>().Any(f => f.sharedMesh);
                 if (!objectHasAtLeastOneMesh)
                 {
-                    Debug.LogWarning($"{objectName} must have at least one MeshFilter with mesh in its hierarchy!");
+                    Debug.LogWarning($"Game object \"{objectName}\" must have at least one MeshFilter with an assigned mesh in its hierarchy!");
                     targetProperty.objectReferenceValue = null;
                     return;
                 }

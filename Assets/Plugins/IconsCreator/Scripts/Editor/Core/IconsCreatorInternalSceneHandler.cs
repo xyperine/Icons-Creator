@@ -50,8 +50,6 @@ namespace IconsCreationTool.Editor.Core
 
             EditorSceneManager.CloseScene(scene, true);
             EditorSceneManager.SetActiveScene(prevActiveScene);
-
-            Debug.Log($"Scene {SCENE_NAME} was created!");
         }
 
 
@@ -144,7 +142,7 @@ namespace IconsCreationTool.Editor.Core
         {
             if (EditorSceneManager.GetActiveScene().name != SCENE_NAME)
             {
-                Debug.LogWarning("Can place target only in the internal scene!");
+                Debug.LogWarning("Something went wrong! Target can only be placed in the internal scene!");
                 return null;
             }
 

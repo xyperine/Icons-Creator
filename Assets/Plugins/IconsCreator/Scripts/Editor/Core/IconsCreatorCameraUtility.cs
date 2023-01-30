@@ -57,10 +57,7 @@ namespace IconsCreationTool.Editor.Core
             if (!_camera)
             {
                 Debug.LogWarning($"Something went wrong! No camera tagged \"{ICONS_CREATION_CAMERA_TAG}\" was found!");
-                return;
             }
-
-            Debug.Log("Camera found!");
         }
 
 

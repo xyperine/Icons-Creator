@@ -2,7 +2,6 @@
 using IconsCreationTool.Editor.Utility.Helpers;
 using UnityEditorInternal;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace IconsCreationTool.Editor.Core
 {
@@ -51,8 +50,6 @@ namespace IconsCreationTool.Editor.Core
             _cameraUtility.SetData(_data.Targets.FirstOrDefault(), _data.Size, _data.Padding);
             _iconsSaver.SetData(_data.Prefix, _data.Suffix);
 
-            Debug.Log("Data passed");
-            
             OnDataChanged();
         }
 
