@@ -1,0 +1,22 @@
+{
+  "name": "com.xyperine.icons_creator",
+  "version": "0.1.0",
+  "displayName": "Icons Creator",
+  "description": "Tool for creating icons from 3D objects",
+  "unity": "2021.3",
+  "unityRelease": "14f1",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "author": {
+    "name": "xyperine",
+    "email": "ewsannne@gmail.com",
+    "url": "https://github.com/xyperine"
+  },
+  "samples": [
+    {
+      "displayName": "Test",
+      "description": "Test samples",
+      "path": "Samples~/Test"
+    }
+  ]
+}

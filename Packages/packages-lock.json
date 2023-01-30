@@ -171,6 +171,12 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.xyperine.icons_creator": {
+      "version": "file:com.xyperine.IconsCreator",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
