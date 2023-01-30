@@ -20,6 +20,7 @@ namespace IconsCreationTool.Editor.Core
         [SerializeField] private float padding;
         
         [SerializeField] private List<Object> targets = new List<Object>();
+        [SerializeField] private bool renderShadows;
 
         private const int PREVIEW_SIZE = 256;
         
@@ -53,6 +54,7 @@ namespace IconsCreationTool.Editor.Core
         private SerializedProperty _sizeSerializedProperty;
         private SerializedProperty _paddingSerializedProperty;
         private SerializedProperty _targetsObjectSerializedProperty;
+        private SerializedProperty _renderShadowsSerializedProperty;
 
         #endregion
 
@@ -99,6 +101,7 @@ namespace IconsCreationTool.Editor.Core
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
             _paddingSerializedProperty = _serializedObject.FindProperty(nameof(padding));
             _targetsObjectSerializedProperty = _serializedObject.FindProperty(nameof(targets));
+            _renderShadowsSerializedProperty = _serializedObject.FindProperty(nameof(renderShadows));
         }
 
 
@@ -163,6 +166,10 @@ namespace IconsCreationTool.Editor.Core
 
                 DrawSizingProperties();
 
+                IconsCreatorWindowElements.DrawRegularSpace();
+                
+                DrawOtherProperties();
+                
                 IconsCreatorWindowElements.DrawRegularSpace();
             }
         }
@@ -234,6 +241,19 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
+        private void DrawOtherProperties()
+        {
+            using (IconsCreatorWindowElements.VerticalScope)
+            {
+                IconsCreatorWindowElements.DrawBoldLabel("Other");
+                
+                EditorGUILayout.PropertyField(_renderShadowsSerializedProperty);
+
+                IconsCreatorWindowElements.DrawSmallSpace();
+            }
+        }
+
+
         private void DrawTargetsProperties()
         {
             using (IconsCreatorWindowElements.VerticalScopeBox)
@@ -256,7 +276,7 @@ namespace IconsCreationTool.Editor.Core
                         RemoveInvalidTargetReferences();
                     }
                 }
-                
+
                 IconsCreatorWindowElements.DrawSmallSpace();
             }
         }
@@ -354,7 +374,7 @@ namespace IconsCreationTool.Editor.Core
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, prefix, suffix, backgroundData, targets);
+                new IconsCreatorData(size, padding, prefix, suffix, backgroundData, targets, renderShadows);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();

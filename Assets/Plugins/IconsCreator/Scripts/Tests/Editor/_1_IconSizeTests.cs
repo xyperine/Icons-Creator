@@ -38,7 +38,7 @@ namespace IconsCreationTool.Tests.Editor
         {
             IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
             IconsCreatorData data =
-                new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, _targets);
+                new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, _targets, false);
             _iconsCreator.SetData(data);
         }
 

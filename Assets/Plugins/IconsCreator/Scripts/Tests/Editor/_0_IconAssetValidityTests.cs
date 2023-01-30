@@ -29,7 +29,7 @@ namespace IconsCreationTool.Tests.Editor
             target.transform.position = new Vector3(1024f, 0f, 1024f);
             List<Object> targets = new List<Object> {target};
             IconsCreatorData data =
-                new IconsCreatorData(512, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, targets);
+                new IconsCreatorData(512, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, targets, false);
             _iconsCreator.SetData(data);
 
             _iconsCreator.CreateIcon();

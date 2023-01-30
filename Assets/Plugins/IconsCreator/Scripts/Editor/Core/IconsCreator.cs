@@ -75,7 +75,7 @@ namespace IconsCreationTool.Editor.Core
                 return;
             }
 
-            _sceneHandler.InteractWithTarget(_data.Targets[0], AdjustCamera);
+            _sceneHandler.InteractWithTarget(_data.Targets[0], _data.RenderShadows, AdjustCamera);
         }
 
 
@@ -100,7 +100,7 @@ namespace IconsCreationTool.Editor.Core
 
             foreach (GameObject target in _data.Targets)
             {
-                _sceneHandler.InteractWithTarget(target, t =>
+                _sceneHandler.InteractWithTarget(target, _data.RenderShadows, t =>
                 {
                     AdjustCamera(t);
             

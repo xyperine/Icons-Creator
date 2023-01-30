@@ -95,7 +95,7 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        public void InteractWithTarget(GameObject targetObject, Action<GameObject> action)
+        public void InteractWithTarget(GameObject targetObject, bool renderShadows, Action<GameObject> action)
         {
             Scene prevActiveScene = OpenScene();
             
@@ -106,6 +106,11 @@ namespace IconsCreationTool.Editor.Core
                 target.layer = layer;
                 foreach (Transform transform in target.GetComponentsInChildren<Transform>())
                 {
+                    if (transform.TryGetComponent(out MeshRenderer renderer))
+                    {
+                        renderer.shadowCastingMode = renderShadows ? 
+                            ShadowCastingMode.On : ShadowCastingMode.Off;
+                    }
                     transform.gameObject.layer = layer;
                 }
 

@@ -13,10 +13,11 @@ namespace IconsCreationTool.Editor.Core
         public string Suffix { get; }
         public IconBackgroundData BackgroundData { get; }
         public GameObject[] Targets { get; }
+        public bool RenderShadows { get; }
 
 
         public IconsCreatorData(int size, float padding, string prefix, string suffix,
-            IconBackgroundData backgroundData, List<Object> targets)
+            IconBackgroundData backgroundData, List<Object> targets, bool renderShadows)
         {
             Size = size;
             Padding = padding;
@@ -24,6 +25,7 @@ namespace IconsCreationTool.Editor.Core
             Suffix = suffix;
             BackgroundData = backgroundData;
             Targets = targets.ExtractAllGameObjects().Where(g => g.HasVisibleMesh()).ToArray();
+            RenderShadows = renderShadows;
         }
     }
 }
