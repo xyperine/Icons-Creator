@@ -12,7 +12,7 @@ namespace IconsCreationTool.Editor.Core
     {
         private const string ICONS_CREATOR_TARGETS_LAYER_NAME = "IconsCreatorTargets";
         private const string SCENE_NAME = "Icons_Creation";
-        private readonly string _relativeScenePath = $"Packages/com.xyperine.icons_creator/Scenes/{SCENE_NAME}.unity";
+        private readonly string _relativeScenePath = $"Assets/Plugins/IconsCreator/Scenes/{SCENE_NAME}.unity";
 
         private Scene _openedScene;
         private Light[] _allLightSources;
