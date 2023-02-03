@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IconsCreationTool.Editor.Utility.Helpers
 {
-    public static class LayersHelper
+    internal static class LayersHelper
     {
         /// <summary>
         /// Create a layer at the next available index. Returns silently if layer already exists.

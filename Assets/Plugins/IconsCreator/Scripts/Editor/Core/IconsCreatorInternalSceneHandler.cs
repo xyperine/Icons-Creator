@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using IconsCreationTool.Editor.Utility.Helpers;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -14,9 +15,8 @@ namespace IconsCreationTool.Editor.Core
         private const string SCENE_NAME = "Icons_Creation";
         private readonly string _relativeScenePath = $"Assets/Plugins/IconsCreator/Scenes/{SCENE_NAME}.unity";
 
-        private Scene _openedScene;
-        private Light[] _allLightSources;
-
+        private Scene _prevActiveScene;
+        
         private string _iconsCreationCameraTag;
 
 
@@ -95,11 +95,15 @@ namespace IconsCreationTool.Editor.Core
 
         public void InteractWithTarget(GameObject targetObject, bool renderShadows, Action<GameObject> action)
         {
-            Scene prevActiveScene = OpenScene();
+            Scene scene = default;
             
             try
             {
+                LayersHelper.CreateLayer(ICONS_CREATOR_TARGETS_LAYER_NAME);
+                scene = OpenScene();
+                
                 GameObject target = PlaceTarget(targetObject);
+                
                 int layer = LayerMask.NameToLayer(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 target.layer = layer;
                 foreach (Transform transform in target.GetComponentsInChildren<Transform>())
@@ -112,29 +116,40 @@ namespace IconsCreationTool.Editor.Core
                     transform.gameObject.layer = layer;
                 }
 
+                GameObject[] sceneRootGameObjects = scene.GetRootGameObjects();
+                foreach (GameObject rootGameObject in sceneRootGameObjects)
+                {
+                    Light light = rootGameObject.GetComponentInChildren<Light>();
+                    if (light)
+                    {
+                        light.cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
+                    }
+                }
+
                 action?.Invoke(target);
             }
             finally
             {
-                CloseScene(prevActiveScene);
+                CloseScene(scene);
+                LayersHelper.RemoveLayer(ICONS_CREATOR_TARGETS_LAYER_NAME);
             }
         }
 
 
         private Scene OpenScene()
         {
-            Scene prevActiveScene = EditorSceneManager.GetActiveScene();
-            _allLightSources = Object.FindObjectsOfType<Light>();
+            _prevActiveScene = EditorSceneManager.GetActiveScene();
+            Light[] allLightSources = Object.FindObjectsOfType<Light>();
 
-            foreach (Light lightSource in _allLightSources)
+            foreach (Light lightSource in allLightSources)
             {
-                lightSource.enabled = false;
+                lightSource.cullingMask &= ~LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
             }
 
-            _openedScene = EditorSceneManager.OpenScene(_relativeScenePath, OpenSceneMode.Additive);
-            EditorSceneManager.SetActiveScene(_openedScene);
+            var openedScene = EditorSceneManager.OpenScene(_relativeScenePath, OpenSceneMode.Additive);
+            EditorSceneManager.SetActiveScene(openedScene);
 
-            return prevActiveScene;
+            return openedScene;
         }
 
 
@@ -151,23 +166,13 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        private void CloseScene(Scene prevActiveScene)
+        private void CloseScene(Scene scene)
         {
-            EditorSceneManager.SetActiveScene(prevActiveScene);
+            EditorSceneManager.SetActiveScene(_prevActiveScene);
 
-            if (_openedScene.IsValid())
+            if (scene.IsValid())
             {
-                EditorSceneManager.CloseScene(_openedScene, true);
-            }
-
-            foreach (Light lightSource in _allLightSources)
-            {
-                if (!lightSource)
-                {
-                    continue;
-                }
-
-                lightSource.enabled = true;
+                EditorSceneManager.CloseScene(scene, true);
             }
         }
     }
