@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.2.2] - 2023-Feb-03
-[0.2.2]: https://github.com/xyperine/Icons-Creator/commit/f250561faf7b655e44bf8d9ead054c08ec0c6ef4
+[0.2.2]: https://github.com/xyperine/Icons-Creator/commit/1b8734f512273bcc0668c71596a7494483a2d225
 
 ### Changed
 
