@@ -67,7 +67,6 @@ namespace IconsCreationTool.Editor.Core
                     camera.clearFlags = CameraClearFlags.SolidColor;
                     camera.backgroundColor = Color.clear;
                     camera.orthographic = true;
-                    camera.cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 }
 
                 light ??= rootGameObject.GetComponentInChildren<Light>();
@@ -115,14 +114,21 @@ namespace IconsCreationTool.Editor.Core
                     }
                     transform.gameObject.layer = layer;
                 }
-
+                
+                int cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
                 GameObject[] sceneRootGameObjects = scene.GetRootGameObjects();
                 foreach (GameObject rootGameObject in sceneRootGameObjects)
                 {
                     Light light = rootGameObject.GetComponentInChildren<Light>();
                     if (light)
                     {
-                        light.cullingMask = LayerMask.GetMask(ICONS_CREATOR_TARGETS_LAYER_NAME);
+                        light.cullingMask = cullingMask;
+                    }
+                    
+                    Camera camera = rootGameObject.GetComponentInChildren<Camera>();
+                    if (camera)
+                    {
+                        camera.cullingMask = cullingMask;
                     }
                 }
 
@@ -157,7 +163,7 @@ namespace IconsCreationTool.Editor.Core
         {
             if (EditorSceneManager.GetActiveScene().name != SCENE_NAME)
             {
-                Debug.LogWarning("Something went wrong! Target can only be placed in the internal scene!");
+                Debug.LogWarning("Something went wrong! Target object can only be placed in the internal scene!");
                 return null;
             }
 

@@ -104,7 +104,7 @@ namespace IconsCreationTool.Editor.Core
         {
             if (!_targetObject)
             {
-                Debug.LogWarning("No target found!");
+                Debug.LogWarning("No target object found!");
                 return;
             }
 

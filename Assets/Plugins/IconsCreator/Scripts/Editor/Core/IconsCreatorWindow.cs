@@ -132,7 +132,7 @@ namespace IconsCreationTool.Editor.Core
             
             IconsCreatorWindowElements.DrawRegularSpace();
 
-            DrawTargetsProperties();
+            DrawObjectsOptions();
             
             IconsCreatorWindowElements.DrawRegularSpace();
 
@@ -161,15 +161,15 @@ namespace IconsCreationTool.Editor.Core
 
                 IconsCreatorWindowElements.DrawRegularSpace();
 
-                DrawNamingProperties();
+                DrawNamingOptions();
             
                 IconsCreatorWindowElements.DrawRegularSpace();
 
-                DrawSizingProperties();
+                DrawSizingOptions();
 
                 IconsCreatorWindowElements.DrawRegularSpace();
                 
-                DrawOtherProperties();
+                DrawOtherOptions();
                 
                 IconsCreatorWindowElements.DrawRegularSpace();
             }
@@ -182,41 +182,53 @@ namespace IconsCreationTool.Editor.Core
             {
                 IconsCreatorWindowElements.DrawBoldLabel("Background");
 
-                using (IconsCreatorWindowElements.HorizontalScope)
-                {
-                    GUILayout.Label("Type", GUILayout.Width(EditorGUIUtility.labelWidth));
-                    
-                    Undo.RecordObject(this, TITLE);
-                    backgroundType =
-                        (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
-                    _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
-                }
+                DrawBackgroundTypeOption();
 
                 IconsCreatorWindowElements.DrawSmallSpace();
 
-                switch (backgroundType)
-                {
-                    case IconBackground.None:
-                        break;
-                
-                    case IconBackground.Color:
-                        EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
-                        IconsCreatorWindowElements.DrawSmallSpace();
-                        break;
-                
-                    case IconBackground.Texture:
-                        EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
-                        IconsCreatorWindowElements.DrawSmallSpace();
-                        break;
-                
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                DrawBackgroundPickerOption();
             }
         }
 
 
-        private void DrawNamingProperties()
+        private void DrawBackgroundTypeOption()
+        {
+            using (IconsCreatorWindowElements.HorizontalScope)
+            {
+                GUILayout.Label("Type", GUILayout.Width(EditorGUIUtility.labelWidth));
+
+                Undo.RecordObject(this, TITLE);
+                backgroundType =
+                    (IconBackground) GUILayout.Toolbar((int) backgroundType, Enum.GetNames(typeof(IconBackground)));
+                _backgroundTypeSerializedProperty.enumValueIndex = (int) backgroundType;
+            }
+        }
+
+
+        private void DrawBackgroundPickerOption()
+        {
+            switch (backgroundType)
+            {
+                case IconBackground.None:
+                    break;
+
+                case IconBackground.Color:
+                    EditorGUILayout.PropertyField(_backgroundColorSerializedProperty);
+                    IconsCreatorWindowElements.DrawSmallSpace();
+                    break;
+
+                case IconBackground.Texture:
+                    EditorGUILayout.PropertyField(_backgroundTextureSerializedProperty);
+                    IconsCreatorWindowElements.DrawSmallSpace();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+
+        private void DrawNamingOptions()
         {
             using (IconsCreatorWindowElements.VerticalScope)
             {
@@ -230,7 +242,7 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        private void DrawSizingProperties()
+        private void DrawSizingOptions()
         {
             using (IconsCreatorWindowElements.VerticalScope)
             {
@@ -242,7 +254,7 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        private void DrawOtherProperties()
+        private void DrawOtherOptions()
         {
             using (IconsCreatorWindowElements.VerticalScope)
             {
@@ -255,14 +267,15 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        private void DrawTargetsProperties()
+        private void DrawObjectsOptions()
         {
             using (IconsCreatorWindowElements.VerticalScopeBox)
             {
-                IconsCreatorWindowElements.DrawBoldLabel("Targets");
+                IconsCreatorWindowElements.DrawBoldLabel("Objects");
 
                 GUIContent content = new GUIContent("List");
                 EditorGUILayout.PropertyField(_targetsObjectSerializedProperty, content);
+                
                 int targetsCount = _targetsObjectSerializedProperty.arraySize;
                 for (int i = 0; i < targetsCount; i++)
                 {
@@ -272,7 +285,7 @@ namespace IconsCreationTool.Editor.Core
 
                 if (targets.Any(t => !t) || targets.Distinct().Count() < targets.Count)
                 {
-                    if (GUILayout.Button("Remove invalid elements"))
+                    if (GUILayout.Button("Remove invalid objects"))
                     {
                         RemoveInvalidTargetReferences();
                     }
@@ -294,7 +307,8 @@ namespace IconsCreationTool.Editor.Core
             bool isAllowedType = target is GameObject || target.IsFolderContainingGameObjects();
             if (!isAllowedType)
             {
-                Debug.LogWarning("Asset must be either a folder containing game objects or a game object!");
+                Debug.LogWarning(
+                    $"Asset \"{target.name}\" is invalid! Asset has to be either a game object or a folder containing game objects!");
                 targetProperty.objectReferenceValue = null;
                 return;
             }
@@ -391,7 +405,6 @@ namespace IconsCreationTool.Editor.Core
             }
             
             Texture2D cameraView = _iconsCreator.CameraView;
-
             _previewTexture = cameraView.Resize(PREVIEW_SIZE);
         }
 
