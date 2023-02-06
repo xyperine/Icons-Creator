@@ -18,6 +18,8 @@ The tool was initially created for my game, but it was way too basic and require
 
 If you are using URP, please make sure the depth texture is enabled.
 
+Unity version - 2021.3+
+
 ### Important notes
 
 - The tool uses a special scene named Icons_Creation, it comes with the package. It is used to set the objects and render them to the icons. Please don't do anything with this scene, just ignore it. If you accidentally modified it - delete it, and the tool will regenerate it.
