@@ -75,11 +75,13 @@ Before you run tests make sure `Icons_Creation` scene is present and if you acci
 There is no actual documentation for the code at the moment, I will update this section if I will make one. So here is a short and simple explanation of how does this tool work:
 
 There are two main classes:
+
 - `IconsCreatorWindow` - handles all GUI drawing and saving properties.
 - `IconsCreator` - coordinates low-level components mentioned below to create icons.
 
-Other important classes:
-- `IconsCreatorInternalSceneHandler` - does generating an internal scene named `Icons_Creation`, loading it, closing it, and placing the objects on the internal scene.
+Classes that do the actual work:
+
+- `IconsCreatorInternalSceneHandler` - does generates an internal scene named `Icons_Creation`, loads it, closes it, and places the objects on the internal scene.
 - `IconsCreatorCameraUtility` - adjusts camera position, rotation, orthographic size and provides camera view texture.
 - `IconsSaver` - saves camera view as a sprite asset.
 
