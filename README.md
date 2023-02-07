@@ -23,6 +23,12 @@ The tool was initially created for my game, but it was way too basic and require
 
 ### Compatibility
 
+#### Editor version
+
+It should be fine if you are using 2021.3+, however, I didn't really test any other versions.
+
+*I will update this section if I will try other editor versions.*
+
 #### Rendering
 
 | Render Pipeline &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	| Compatible 					|
@@ -33,12 +39,6 @@ The tool was initially created for my game, but it was way too basic and require
 
 If you are using URP, please make sure the depth texture is enabled.
 
-#### Editor version
-
-It should be fine if you are using 2021.3+, however, I didn't really test any other versions.
-
-*I will update this section if I will try other editor versions.*
-
 ### Important notes
 
 - The tool can only be used in Edit mode.
@@ -48,7 +48,7 @@ It should be fine if you are using 2021.3+, however, I didn't really test any ot
 ### Install
 
 1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.2.3)
-2. Import it in the Unity
+2. Import it to Unity
 
 ## Future :crystal_ball:
 
@@ -64,12 +64,6 @@ I'm not sure if I will be working on this tool anymore, but if I will, I am prob
 
 If you want to fork and modify the tool, this information may be useful.
 
-### Testing
-
-I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't assert the content of the generated icons.
-
-Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
-
 ### Documentation
 
 There is no actual documentation for the code at the moment, I will update this section if I will make one. So here is a short and simple explanation of how does this tool work:
@@ -81,7 +75,7 @@ There are two main classes:
 
 Classes that do the actual work:
 
-- `IconsCreatorInternalSceneHandler` - does generates an internal scene named `Icons_Creation`, loads it, closes it, and places the objects on the internal scene.
+- `IconsCreatorInternalSceneHandler` - generates an internal scene named `Icons_Creation`, loads it, closes it, and places the objects on the internal scene.
 - `IconsCreatorCameraUtility` - adjusts camera position, rotation, orthographic size and provides camera view texture.
 - `IconsSaver` - saves camera view as a sprite asset.
 
@@ -92,3 +86,9 @@ Some details:
 - When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list. But `IconsSaver` also comes into play. It saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
 
 *I am not really satisfied with the code in the project, so I will probably refactor it and update this section.*
+
+### Testing
+
+I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't assert the content of the generated icons.
+
+Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
