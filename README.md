@@ -17,7 +17,7 @@
 
 This tool can create icons of any 3D objects imported in Unity. This includes prefabs, models, objects from loaded scenes, also you can make icons out of the entire folder contatining 3D objects.
 
-The tool was initially created for my game, but it was way too basic and required a lot of manual work to do to create icons. Also I was using Odin for custom inspector and I wanted to learn more about editor coding, so I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
+The tool was initially created for my game, but it was quite limited and required a lot of manual work to do to create icons. Also I was using Odin for custom inspector and I wanted to learn more about editor coding, so I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
 
 ## Getting started :rocket:
 
@@ -42,8 +42,8 @@ If you are using URP, please make sure the depth texture is enabled.
 ### Important notes
 
 - The tool can only be used in Edit mode.
-- The tool is using a special scene named `Icons_Creation`, it comes with the package. It is used to set the objects and render them to the icons. Please don't do anything with this scene, just ignore it. If you accidentally modified it - delete it, and it will be regenerated next time you open the tool window.
-- Please notice that the tool does load, set active, and unload a special scene every time it creates an icon. So, if you are using `EditorSceneManager` events, keep it in mind.
+- The tool is using a special scene named `Icons_Creation`, it comes with the package. It is used to set the objects and render them as icons. Please don't do anything with this scene, just ignore it. If you accidentally modified it - delete it, and it will be regenerated next time you open the tool window.
+- Please note that the tool does load, set active, and unload a special scene every time it creates an icon. So, if you are using `EditorSceneManager` events, keep it in mind.
 
 ### Install
 
@@ -83,12 +83,12 @@ Some details:
 
 - Every time the tool window is opened, `IconsCreator` asks `IconsCreatorInternalSceneHandler` to create the internal scene if it is missing.
 - To draw a preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the `Objects` list on the internal scene and retrieve the camera view from that scene.
-- When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list. But `IconsSaver` also comes into play. It saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
+- When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list.  `IconsSaver` also comes into play. It saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
 
 *I am not really satisfied with the code in the project, so I will probably refactor it and update this section.*
 
 ### Testing
 
-I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't assert the content of the generated icons.
+I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't cover content validity of the generated icons.
 
 Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
