@@ -15,7 +15,7 @@
 
 ## About :information_source:
 
-This tool can create icons of any 3D objects imported in Unity. This includes prefabs, models, objects from loaded scenes, also you can make icons out of the entire folder contatining 3D objects.
+This tool can create icons of any 3D objects imported in Unity: prefabs, models, objects from loaded scenes. Also you can make icons out of the entire folder contatining 3D objects.
 
 The tool was initially created for my game, but it was quite limited and required a lot of manual work to do to create icons. Also I was using Odin for custom inspector and I wanted to learn more about editor coding, so I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
 
