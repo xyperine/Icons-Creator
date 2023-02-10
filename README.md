@@ -8,10 +8,11 @@
     * [Editor version](#editor-version)
   * [Important notes](#important-notes)
   * [Install](#install)
+* [Examples :eyes:](#examples-eyes)
 * [Future :crystal_ball:](#future-crystal_ball)
 * [For developers :wrench:](#for-developers-wrench)
-  * [Testing](#testing)
   * [Documentation](#documentation)
+  * [Testing](#testing)
 
 ## About :information_source:
 
@@ -49,6 +50,8 @@ If you are using URP, please make sure the depth texture is enabled.
 
 1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.2.3)
 2. Import it to Unity
+
+## Examples :eyes:
 
 ## Future :crystal_ball:
 
