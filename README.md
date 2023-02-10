@@ -17,11 +17,11 @@
 
 ## About :information_source:
 
-This tool can create icons of any 3D objects imported in Unity: prefabs, models, objects placed on opened scenes. Also you can make icons out of entire folders contatining 3D objects.
+This tool can create icons of any 3D object imported in Unity: prefabs, models, objects on the opened scenes. Also you can make icons out of entire folders contatining 3D objects.
 
 I did this tool to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
 
-Hope you'll enjoy using this tool! :purple_heart:
+Hope you'll enjoy this tool! :purple_heart:
 
 ## Features :star2:
 
@@ -46,9 +46,7 @@ Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House
 
 #### Editor version
 
-It should be fine if you are using 2021.3+, I didn't really test any other versions.
-
-I will update this section if I will try other editor versions.
+It should be fine if you are using 2021.3+.
 
 #### Rendering
 
@@ -69,7 +67,7 @@ If you are using URP, please make sure the depth texture is enabled.
 ### Install
 
 1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.2.3)
-2. Import it in Unity
+2. [Import](https://docs.unity3d.com/Manual/AssetPackagesImport.html) it in Unity
 
 ## Future :crystal_ball:
 
@@ -78,6 +76,7 @@ I'm not sure if I will be working on this tool anymore. If I will, I am going to
 - Frame
 - Alpha mask
 - Perspective camera projection
+- Object material
 - Ambient lighting
 - Object outline
 
@@ -89,24 +88,22 @@ If you want to fork and modify the tool, this information may be useful.
 
 There is no actual documentation for the code, I will update this section if I will make one. So here is a short and simple explanation of how does this tool work:
 
-There are two main classes:
+High-level components:
 
-- `IconsCreatorWindow` - handles all GUI drawing and saving properties.
+- `IconsCreatorWindow` - handles user input, all GUI drawing, and saving properties.
 - `IconsCreator` - coordinates low-level components mentioned below to create icons.
 
-Classes that do the actual work:
+Low-level components:
 
 - `IconsCreatorInternalSceneHandler` - generates an internal scene named *Icons_Creation*, loads it, closes it, and places the objects on the internal scene.
 - `IconsCreatorCameraUtility` - adjusts camera position, rotation, orthographic size and provides camera view texture.
 - `IconsSaver` - saves camera view as a sprite asset.
 
-Some details:
+Core processes:
 
 - Every time the tool window is opened, `IconsCreator` asks `IconsCreatorInternalSceneHandler` to create the internal scene if it is missing.
 - To draw the preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the *Objects* list on the internal scene and retrieve the camera view from that scene.
 - When creating icons, the "preview" procedure mentioned above is applied for every object from the *Objects* list. Then `IconsSaver` saves every retrieved camera view texture as a sprite asset with all user specified properties to the *Assets/Textures/Icons* folder created by the tool.
-
-I am not really satisfied with the code in the project, so I will probably refactor it and update this section.
 
 ### Testing
 
