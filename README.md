@@ -52,6 +52,12 @@ If you are using URP, please make sure the depth texture is enabled.
 2. Import it to Unity
 
 ## Examples :eyes:
+Here are some examples with different backgrounds:
+
+Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House (texture)    | Turret (texture) 
+:---------|:--------:|:--------:|:--------:|:--------:|:--------:
+![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
+
 
 ## Future :crystal_ball:
 
