@@ -25,7 +25,7 @@ Hope you'll enjoy this tool! :purple_heart:
 
 ## Features :star2:
 
-- Make icons out of any amount of 3D objects in just one button click.
+- Make icons of any amount of 3D objects in just one button click.
 - Set custom background
 - Adjust object scale 
 - Set icon size in pixels
