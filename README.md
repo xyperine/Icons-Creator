@@ -31,7 +31,7 @@ Hope you'll enjoy using this tool! :purple_heart:
 - Set icon size in pixels
 - Add suffix or prefix to the icon's name
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5UHYbbjXDpM/0.jpg)](https://www.youtube.com/watch?v=5UHYbbjXDpM)
+[Here](https://youtu.be/5UHYbbjXDpM) is a video demonstration
 
 ## Examples :eyes:
 Here are some examples with different backgrounds:
