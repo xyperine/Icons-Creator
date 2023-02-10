@@ -2,13 +2,13 @@
 
 ## Table of contents
 * [About :information_source:](#about-information_source)
+* [Examples :eyes:](#examples-eyes)
 * [Getting started :rocket:](#getting-started-rocket)
   * [Compatibility](#compatibility)
     * [Rendering](#rendering)
     * [Editor version](#editor-version)
   * [Important notes](#important-notes)
   * [Install](#install)
-* [Examples :eyes:](#examples-eyes)
 * [Future :crystal_ball:](#future-crystal_ball)
 * [For developers :wrench:](#for-developers-wrench)
   * [Documentation](#documentation)
@@ -19,6 +19,13 @@
 This tool can create icons of any 3D objects imported in Unity: prefabs, models, objects placed on opened scenes. Also you can make icons out of entire folders contatining 3D objects.
 
 This is kind of experimental tool, I did it to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
+
+## Examples :eyes:
+Here are some examples with different backgrounds:
+
+Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House (texture)    | Turret (texture) 
+:---------|:--------:|:--------:|:--------:|:--------:|:--------:
+![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
 
 ## Getting started :rocket:
 
@@ -49,15 +56,7 @@ If you are using URP, please make sure the depth texture is enabled.
 ### Install
 
 1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.2.3)
-2. Import it to Unity
-
-## Examples :eyes:
-Here are some examples with different backgrounds:
-
-Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House (texture)    | Turret (texture) 
-:---------|:--------:|:--------:|:--------:|:--------:|:--------:
-![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
-
+2. Import it in Unity
 
 ## Future :crystal_ball:
 
