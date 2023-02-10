@@ -83,7 +83,7 @@ Some details:
 
 - Every time the tool window is opened, `IconsCreator` asks `IconsCreatorInternalSceneHandler` to create the internal scene if it is missing.
 - To draw a preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the `Objects` list on the internal scene and retrieve the camera view from that scene.
-- When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list.  `IconsSaver` also comes into play. It saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
+- When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list. Then `IconsSaver` saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
 
 *I am not really satisfied with the code in the project, so I will probably refactor it and update this section.*
 
