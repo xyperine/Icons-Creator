@@ -2,6 +2,7 @@
 
 ## Table of contents
 * [About :information_source:](#about-information_source)
+* [Features :star2:](#features-star2)
 * [Examples :eyes:](#examples-eyes)
 * [Getting started :rocket:](#getting-started-rocket)
   * [Compatibility](#compatibility)
@@ -18,13 +19,25 @@
 
 This tool can create icons of any 3D objects imported in Unity: prefabs, models, objects placed on opened scenes. Also you can make icons out of entire folders contatining 3D objects.
 
-This is kind of experimental tool, I did it to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
+I did this tool to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
+
+Hope you'll enjoy using this tool! :purple_heart:
+
+## Features :star2:
+
+- Make icons out of any amount of 3D objects in just one button click.
+- Set custom background
+- Adjust object scale 
+- Set icon size in pixels
+- Add suffix or prefix to the icon's name
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5UHYbbjXDpM/0.jpg)](https://www.youtube.com/watch?v=5UHYbbjXDpM)
 
 ## Examples :eyes:
 Here are some examples with different backgrounds:
 
 Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House (texture)    | Turret (texture) 
-:---------|:--------:|:--------:|:--------:|:--------:|:--------:
+:---------:|:--------:|:--------:|:--------:|:--------:|:--------:
 ![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
 
 ## Getting started :rocket:
@@ -33,9 +46,9 @@ Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House
 
 #### Editor version
 
-It should be fine if you are using 2021.3+, however, I didn't really test any other versions.
+It should be fine if you are using 2021.3+, I didn't really test any other versions.
 
-*I will update this section if I will try other editor versions.*
+I will update this section if I will try other editor versions.
 
 #### Rendering
 
@@ -50,7 +63,7 @@ If you are using URP, please make sure the depth texture is enabled.
 ### Important notes
 
 - The tool can only be used in Edit mode.
-- The tool is using a special scene named `Icons_Creation`, it comes with the package. It is used to set the objects and render them as icons. Please don't do anything with this scene, just ignore it. If you accidentally modified it - delete it, and it will be regenerated next time you open the tool window.
+- The tool is using a special scene named *Icons_Creation*, it comes with the package. It is used to set the objects and render them as icons. Please don't do anything with this scene, just ignore it. If you accidentally modified it - delete it, and it will be regenerated next time you open the tool window.
 - Please note that the tool does load, set active, and unload a special scene every time it creates an icon. So, if you are using `EditorSceneManager` events, keep it in mind.
 
 ### Install
@@ -60,7 +73,7 @@ If you are using URP, please make sure the depth texture is enabled.
 
 ## Future :crystal_ball:
 
-I'm not sure if I will be working on this tool anymore, but if I will, I am probably going to do some QoL updates, improve code, optimize it, and add some or all of the following features:
+I'm not sure if I will be working on this tool anymore. If I will, I am going to do some QoL updates, improve code, optimize it, and add some or all of the following features:
 
 - Frame
 - Alpha mask
@@ -74,7 +87,7 @@ If you want to fork and modify the tool, this information may be useful.
 
 ### Documentation
 
-There is no actual documentation for the code at the moment, I will update this section if I will make one. So here is a short and simple explanation of how does this tool work:
+There is no actual documentation for the code, I will update this section if I will make one. So here is a short and simple explanation of how does this tool work:
 
 There are two main classes:
 
@@ -83,17 +96,17 @@ There are two main classes:
 
 Classes that do the actual work:
 
-- `IconsCreatorInternalSceneHandler` - generates an internal scene named `Icons_Creation`, loads it, closes it, and places the objects on the internal scene.
+- `IconsCreatorInternalSceneHandler` - generates an internal scene named *Icons_Creation*, loads it, closes it, and places the objects on the internal scene.
 - `IconsCreatorCameraUtility` - adjusts camera position, rotation, orthographic size and provides camera view texture.
 - `IconsSaver` - saves camera view as a sprite asset.
 
 Some details:
 
 - Every time the tool window is opened, `IconsCreator` asks `IconsCreatorInternalSceneHandler` to create the internal scene if it is missing.
-- To draw a preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the `Objects` list on the internal scene and retrieve the camera view from that scene.
-- When creating icons, the "preview" procedure mentioned above is applied for every object from the `Objects` list. Then `IconsSaver` saves every retrieved camera view texture as a sprite asset with all user specified properties to the `Assets/Textures/Icons` folder created by the tool.
+- To draw the preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the *Objects* list on the internal scene and retrieve the camera view from that scene.
+- When creating icons, the "preview" procedure mentioned above is applied for every object from the *Objects* list. Then `IconsSaver` saves every retrieved camera view texture as a sprite asset with all user specified properties to the *Assets/Textures/Icons* folder created by the tool.
 
-*I am not really satisfied with the code in the project, so I will probably refactor it and update this section.*
+I am not really satisfied with the code in the project, so I will probably refactor it and update this section.
 
 ### Testing
 
