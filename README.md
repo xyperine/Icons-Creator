@@ -14,6 +14,7 @@
 * [For developers :wrench:](#for-developers-wrench)
   * [Documentation](#documentation)
   * [Testing](#testing)
+* [Support me :gift_heart:](#support-me-gift_heart)
 
 ## About :information_source:
 
@@ -110,3 +111,25 @@ Core processes:
 I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't cover content validity of the generated icons.
 
 Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
+
+## Support me :gift_heart:
+
+If you consider this resource useful, you can help me by donating some crypto, so I can make more tools and games, improve quality of my creations and speed up their development.  
+Thank you! :blush:
+
+BTC:
+```
+bc1qtw2akv8ftzx0glczlghh8k328srfv2eqs08hyh
+```
+DASH:
+```
+XhvpMB9T5jdHNHWDpnmyzqCoJh9Q8YjtZS
+```
+ATOM:
+```
+cosmos1uw2a87sdmx0ee0lag6e7e2py566vyl8mcumksl
+```
+ETH:
+```
+0x119C025a5129954418675cc5C4Dd07E968E9B5C8
+```
