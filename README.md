@@ -17,6 +17,9 @@
 
 ## About :information_source:
 
+> [!NOTE]
+> The project is not supported anymore. However, I have some drafts for future updates, and when (and if) I have time for it, I will update it.
+
 This tool can create icons of any 3D object imported in Unity: prefabs, models, and objects on the opened scenes. Also you can make icons out of entire folders containing 3D objects.
 
 I did this tool to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
@@ -46,7 +49,7 @@ Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House
 
 #### Editor version
 
-It should be fine if you are using 2021.3+.
+Unstable in Unity 6+, otherwise should be fine if you are using 2021.3+.
 
 #### Rendering
 
