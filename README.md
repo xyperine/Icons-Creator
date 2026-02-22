@@ -1,4 +1,4 @@
-# Icons Creator 0.2.3
+# Icons Creator 0.3.0
 
 ## Table of contents
 * [About :information_source:](#about-information_source)
@@ -18,7 +18,7 @@
 ## About :information_source:
 
 > [!NOTE]
-> The project is not supported anymore. However, I have some drafts for future updates, and when (and if) I have time for it, I will update it.
+> The project is not actively supported. However, when (and if) I have time for it, I will update it.
 
 This tool can create icons of any 3D object imported in Unity: prefabs, models, and objects on the opened scenes. Also you can make icons out of entire folders containing 3D objects.
 
@@ -30,9 +30,11 @@ Hope you'll find this tool useful! :purple_heart:
 
 - Make icons of any amount of 3D objects in just one button click.
 - Set custom background
+- Set custom frame
 - Adjust object scale 
 - Set icon size in pixels
 - Add suffix or prefix to the icon's name
+- Use settings profiles to swap between different configurations
 
 [Here](https://youtu.be/5UHYbbjXDpM) is a video demonstration
 
@@ -49,7 +51,7 @@ Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House
 
 #### Editor version
 
-Unstable in Unity 6+, otherwise should be fine if you are using 2021.3+.
+Unity 6.0+
 
 #### Rendering
 
@@ -76,7 +78,6 @@ If you are using URP, please make sure the depth texture is enabled.
 
 I'm not sure if I will be working on this tool anymore. If I will, I am going to do some QoL updates, improve code, optimize it, and add some or all of the following features:
 
-- Frame
 - Alpha mask
 - Perspective camera projection
 - Object material
@@ -99,13 +100,13 @@ High-level components:
 Low-level components:
 
 - `IconsCreatorInternalSceneHandler` - generates an internal scene named *Icons_Creation*, loads it, closes it, and places the objects on the internal scene.
-- `IconsCreatorCameraUtility` - adjusts camera position, rotation, orthographic size and provides camera view texture.
+- `IconsCreatorCamera` - adjusts camera position, rotation, orthographic size and provides camera view texture.
 - `IconsSaver` - saves camera view as a sprite asset.
 
 Core processes:
 
 - Every time the tool window is opened, `IconsCreator` asks `IconsCreatorInternalSceneHandler` to create the internal scene if it is missing.
-- To draw the preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCameraUtility` work together to place the first object from the *Objects* list on the internal scene and retrieve the camera view from that scene.
+- To draw the preview `IconsCreator` makes `IconsCreatorInternalSceneHandler` and `IconsCreatorCamera` work together to place the first object from the *Objects* list on the internal scene and retrieve the camera view from that scene.
 - When creating icons, the "preview" procedure mentioned above is applied for every object from the *Objects* list. Then `IconsSaver` saves every retrieved camera view texture as a sprite asset with all user specified properties to the *Assets/Textures/Icons* folder created by the tool.
 
 ### Testing
