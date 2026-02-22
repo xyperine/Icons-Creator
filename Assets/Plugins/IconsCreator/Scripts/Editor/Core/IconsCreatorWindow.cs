@@ -10,9 +10,11 @@ namespace IconsCreationTool.Editor.Core
 {
     public class IconsCreatorWindow : EditorWindow
     {
+        [SerializeField] private IconsCreatorSettingsProfile settingsProfile;
         [SerializeField] private IconBackground backgroundType;
         [SerializeField] private Color backgroundColor = Color.white;
         [SerializeField] private Texture2D backgroundTexture;
+        [SerializeField] private Texture2D frameTexture;
         
         [SerializeField] private string prefix;
         [SerializeField] private string suffix = "_Icon";
@@ -23,6 +25,9 @@ namespace IconsCreationTool.Editor.Core
 
         [SerializeField] private List<Object> targets = new List<Object>();
 
+        private const string DEFAULT_SETTINGS_PROFILE_PATH =
+            "Assets/Plugins/IconsCreator/Data/Default_Settings_Profile.asset";
+        
         private const int PREVIEW_SIZE = 256;
         
         private readonly IconsCreator _iconsCreator = new IconsCreator();
@@ -41,15 +46,20 @@ namespace IconsCreationTool.Editor.Core
         
         private const string TITLE = "Icons Creator";
 
+        private const string WHITE_ICON_PATH = "Assets/Plugins/IconsCreator/Textures/Icon_Dark_Theme.png";
+        private const string BLACK_ICON_PATH = "Assets/Plugins/IconsCreator/Textures/Icon_Light_Theme.png";
+
         #endregion
         
         #region --- Serialized properties ---
 
         private SerializedObject _serializedObject;
 
+        private SerializedProperty _settingsProfileSerializedProperty;
         private SerializedProperty _backgroundTypeSerializedProperty;
         private SerializedProperty _backgroundColorSerializedProperty;
         private SerializedProperty _backgroundTextureSerializedProperty;
+        private SerializedProperty _frameTextureSerializedProperty;
         private SerializedProperty _prefixSerializedProperty;
         private SerializedProperty _suffixSerializedProperty;
         private SerializedProperty _sizeSerializedProperty;
@@ -63,7 +73,11 @@ namespace IconsCreationTool.Editor.Core
         [MenuItem(FULL_MENU_NAME)]
         private static void OpenWindow()
         {
-            GetWindow<IconsCreatorWindow>(TITLE);
+            IconsCreatorWindow window = GetWindow<IconsCreatorWindow>(TITLE);
+
+            string path = EditorGUIUtility.isProSkin ? WHITE_ICON_PATH : BLACK_ICON_PATH;
+
+            window.titleContent.image = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
 
@@ -75,18 +89,23 @@ namespace IconsCreationTool.Editor.Core
 
         private void OnEnable()
         {
-            Load();
-            
+            settingsProfile = AssetDatabase.LoadAssetAtPath<IconsCreatorSettingsProfile>(DEFAULT_SETTINGS_PROFILE_PATH);
+            if (!settingsProfile)
+            {
+                IconsCreatorSettingsProfile newSettingsProfile = CreateInstance<IconsCreatorSettingsProfile>();
+                newSettingsProfile.SetValues(IconBackground.None, Color.white, null, null, string.Empty, "_Icon", 512,
+                    0.1f, false);
+                
+                AssetDatabase.CreateAsset(newSettingsProfile, DEFAULT_SETTINGS_PROFILE_PATH);
+                
+                AssetDatabase.Refresh();
+                
+                settingsProfile = AssetDatabase.LoadAssetAtPath<IconsCreatorSettingsProfile>(DEFAULT_SETTINGS_PROFILE_PATH);
+            }
+
             SetupSerializedProperties();
-        }
-
-
-        private void Load()
-        {
-            prefix = EditorPrefs.GetString(nameof(prefix));
-            suffix = EditorPrefs.GetString(nameof(suffix));
-            size = EditorPrefs.GetInt(nameof(size));
-            padding = EditorPrefs.GetFloat(nameof(padding));
+            
+            ApplySettingsProfile(settingsProfile);
         }
 
 
@@ -94,9 +113,11 @@ namespace IconsCreationTool.Editor.Core
         {
             _serializedObject = new SerializedObject(this);
             
+            _settingsProfileSerializedProperty = _serializedObject.FindProperty(nameof(settingsProfile));
             _backgroundTypeSerializedProperty = _serializedObject.FindProperty(nameof(backgroundType));
             _backgroundColorSerializedProperty = _serializedObject.FindProperty(nameof(backgroundColor));
             _backgroundTextureSerializedProperty = _serializedObject.FindProperty(nameof(backgroundTexture));
+            _frameTextureSerializedProperty = _serializedObject.FindProperty(nameof(frameTexture));
             _prefixSerializedProperty = _serializedObject.FindProperty(nameof(prefix));
             _suffixSerializedProperty = _serializedObject.FindProperty(nameof(suffix));
             _sizeSerializedProperty = _serializedObject.FindProperty(nameof(size));
@@ -106,28 +127,13 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        private void OnDisable()
-        {
-            Save();
-        }
-
-
-        private void Save()
-        {
-            EditorPrefs.SetString(nameof(prefix), prefix);
-            EditorPrefs.SetString(nameof(suffix), suffix);
-            EditorPrefs.SetInt(nameof(size), size);
-            EditorPrefs.SetFloat(nameof(padding), padding);
-        }
-
-
         protected void OnGUI()
         {
             using GUILayout.ScrollViewScope scrollView = new GUILayout.ScrollViewScope(_scrollPosition);
             _scrollPosition = scrollView.scrollPosition;
-                
+            
             _serializedObject.Update();
-
+            
             DrawSettings();
             
             IconsCreatorWindowElements.DrawRegularSpace();
@@ -157,8 +163,16 @@ namespace IconsCreationTool.Editor.Core
                 
                 IconsCreatorWindowElements.DrawSmallSpace();
                 
+                DrawSettingsProfileOptions();
+                
+                IconsCreatorWindowElements.DrawRegularSpace();
+                
                 DrawBackgroundOptions();
 
+                IconsCreatorWindowElements.DrawRegularSpace();
+                
+                DrawFrameOption();
+                
                 IconsCreatorWindowElements.DrawRegularSpace();
 
                 DrawNamingOptions();
@@ -175,6 +189,67 @@ namespace IconsCreationTool.Editor.Core
             }
         }
 
+
+        private void DrawSettingsProfileOptions()
+        {
+            IconsCreatorWindowElements.DrawBoldLabel("Profile");
+            
+            EditorGUI.BeginChangeCheck();
+            
+            EditorGUILayout.PropertyField(_settingsProfileSerializedProperty);
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                ApplySettingsProfile((IconsCreatorSettingsProfile) _settingsProfileSerializedProperty.objectReferenceValue);
+            }
+
+            if (GUILayout.Button("Save as"))
+            {
+                string path = EditorUtility.SaveFilePanelInProject("Save current settings", "New_Settings_Profile", "asset",
+                    "OK");
+
+                if (string.IsNullOrEmpty(path))
+                {
+                    return;
+                }
+
+                IconsCreatorSettingsProfile newSettingsProfile = CreateInstance<IconsCreatorSettingsProfile>();
+                newSettingsProfile.SetValues(backgroundType, backgroundColor, backgroundTexture, frameTexture, prefix, suffix, size, padding, renderShadows);
+                
+                AssetDatabase.CreateAsset(newSettingsProfile, path);
+                
+                AssetDatabase.Refresh();
+            }
+        }
+
+
+        private void ApplySettingsProfile(IconsCreatorSettingsProfile settingsProfile)
+        {
+            if (settingsProfile == null)
+            {
+                Debug.LogWarning("No settings profile!");
+                return;
+            }
+            
+            _backgroundTypeSerializedProperty.enumValueIndex = (int) settingsProfile.BackgroundType;
+            _backgroundColorSerializedProperty.colorValue = settingsProfile.BackgroundColor;
+            _backgroundTextureSerializedProperty.objectReferenceValue = settingsProfile.BackgroundTexture;
+
+            _frameTextureSerializedProperty.objectReferenceValue = settingsProfile.FrameTexture;
+
+            _prefixSerializedProperty.stringValue = settingsProfile.Prefix;
+            _suffixSerializedProperty.stringValue = settingsProfile.Suffix;
+
+            _sizeSerializedProperty.intValue = settingsProfile.Size;
+            _paddingSerializedProperty.floatValue = settingsProfile.Padding;
+
+            _renderShadowsSerializedProperty.boolValue = settingsProfile.RenderShadows;
+
+            _serializedObject.ApplyModifiedProperties();
+            
+            UpdateIconsCreator();
+        }
+        
 
         private void DrawBackgroundOptions()
         {
@@ -225,6 +300,12 @@ namespace IconsCreationTool.Editor.Core
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+
+        private void DrawFrameOption()
+        {
+            EditorGUILayout.PropertyField(_frameTextureSerializedProperty);
         }
 
 
@@ -389,7 +470,7 @@ namespace IconsCreationTool.Editor.Core
         {
             IconBackgroundData backgroundData = new IconBackgroundData(backgroundType, backgroundColor, backgroundTexture);
             IconsCreatorData data =
-                new IconsCreatorData(size, padding, prefix, suffix, backgroundData, targets, renderShadows);
+                new IconsCreatorData(size, padding, prefix, suffix, backgroundData, frameTexture, targets, renderShadows);
             _iconsCreator.SetData(data);
                 
             UpdatePreviewTexture();

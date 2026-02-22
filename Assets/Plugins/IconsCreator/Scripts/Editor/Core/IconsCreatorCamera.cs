@@ -6,9 +6,13 @@ using UnityEngine.SceneManagement;
 
 namespace IconsCreationTool.Editor.Core
 {
-    public class IconsCreatorCameraUtility
+    public class IconsCreatorCamera
     {
         private const string ICONS_CREATION_CAMERA_TAG = "IconsCreationCamera";
+        private const string ICONS_CREATOR_SHADER_NAME = "Unlit/IC";
+        
+        private static readonly int Texture1ShaderPropertyID = Shader.PropertyToID("_Texture1");
+        private static readonly int Texture2ShaderPropertyID = Shader.PropertyToID("_Texture2");
 
         private Camera _camera;
         private GameObject _targetObject;
@@ -18,9 +22,10 @@ namespace IconsCreationTool.Editor.Core
         private float _padding;
 
         private IconBackgroundData _backgroundData;
+        private Texture2D _frameTexture;
 
         private float _distanceToTarget = 10f;
-
+        
         private Vector3 CameraOffset => -_camera.transform.forward * _distanceToTarget;
         public string IconsCreationCameraTag => ICONS_CREATION_CAMERA_TAG;
 
@@ -91,12 +96,19 @@ namespace IconsCreationTool.Editor.Core
                     break;
                 
                 case IconBackground.Texture:
-                    _camera.clearFlags = CameraClearFlags.Nothing;
+                    _camera.clearFlags = CameraClearFlags.SolidColor;
+                    _camera.backgroundColor = Color.clear;
                     break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+
+        public void SetFrameTexture(Texture2D frameTexture)
+        {
+            _frameTexture = frameTexture;
         }
 
 
@@ -146,32 +158,60 @@ namespace IconsCreationTool.Editor.Core
             {
                 throw new ArgumentOutOfRangeException(nameof(_size));
             }
-
-            RenderTexture temporaryRenderTexture = RenderTexture.GetTemporary(_size, _size);
-
+            
+            // Apply background
+            RenderTexture backgroundRT = RenderTexture.GetTemporary(_size, _size, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
             if (_backgroundData.Type == IconBackground.Texture)
             {
                 Texture2D backgroundTexture = _backgroundData.Texture;
                 if (backgroundTexture)
                 {
-                    Graphics.Blit(backgroundTexture, temporaryRenderTexture);
+                    Graphics.Blit(backgroundTexture, backgroundRT);
                 }
             }
-
-            _camera.targetTexture = temporaryRenderTexture;
-            RenderTexture.active = _camera.targetTexture;
-
+            
+            Material mat = new Material(Shader.Find(ICONS_CREATOR_SHADER_NAME));
+            
+            // Render object
+            RenderTexture objectRT = RenderTexture.GetTemporary(_size, _size, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+            _camera.targetTexture = objectRT;
             _camera.Render();
 
+            mat.SetTexture(Texture1ShaderPropertyID, backgroundRT);
+            mat.SetTexture(Texture2ShaderPropertyID, objectRT);
+            
+            RenderTexture finalRT = RenderTexture.GetTemporary(_size, _size, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+            Graphics.Blit(Texture2D.whiteTexture, finalRT, mat);
+
+            RenderTexture.ReleaseTemporary(backgroundRT);
+            
+            _camera.targetTexture = null;
+            RenderTexture.ReleaseTemporary(objectRT);
+            
+            RenderTexture.active = finalRT;
+
+            // Apply frame
+            if (_frameTexture)
+            {
+                Texture2D tex = new Texture2D(_size, _size);
+                tex.ReadPixels(new Rect(0, 0, _size, _size), 0, 0);
+                tex.Apply();
+                
+                mat.SetTexture(Texture1ShaderPropertyID, tex);
+                mat.SetTexture(Texture2ShaderPropertyID, _frameTexture);
+                
+                Graphics.Blit(Texture2D.whiteTexture, finalRT, mat);
+            }
+
+            // Save the final result to the texture
             Texture2D image = new Texture2D(_size, _size);
             image.ReadPixels(new Rect(0, 0, _size, _size), 0, 0);
             image.Apply();
             
-            _camera.targetTexture = null;
             RenderTexture.active = null;
             
-            RenderTexture.ReleaseTemporary(temporaryRenderTexture);
-
+            RenderTexture.ReleaseTemporary(finalRT);
+            
             return image;
         }
     }

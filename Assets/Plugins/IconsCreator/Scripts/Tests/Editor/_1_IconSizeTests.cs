@@ -17,7 +17,7 @@ namespace IconsCreationTool.Tests.Editor
         private const string FILE_EXTENSION = ".png";
         private const string PATH = "Assets/Textures/Icons/";
 
-        private readonly IconsCreator _iconsCreator = new IconsCreator();
+        private readonly global::IconsCreationTool.Editor.Core.IconsCreator _iconsCreator = new global::IconsCreationTool.Editor.Core.IconsCreator();
 
         private List<Object> _targets;
 
@@ -38,7 +38,7 @@ namespace IconsCreationTool.Tests.Editor
         {
             IconBackgroundData backgroundData = new IconBackgroundData(IconBackground.None, default, default);
             IconsCreatorData data =
-                new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, _targets, false);
+                new IconsCreatorData(size, 0f, DESIRED_PREFIX, DESIRED_SUFFIX, backgroundData, null, _targets, false);
             _iconsCreator.SetData(data);
         }
 

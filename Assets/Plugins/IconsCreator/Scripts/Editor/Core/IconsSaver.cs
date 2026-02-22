@@ -19,7 +19,18 @@ namespace IconsCreationTool.Editor.Core
         }
 
 
-        public void SaveIcon(Texture2D image, string name)
+        public void SaveIcons(Texture2D[] images, string[] names)
+        {
+            for (int i = 0; i < images.Length; i++)
+            {
+                SaveIcon(images[i], names[i]);
+            }
+            
+            AssetDatabase.Refresh();
+        }
+
+
+        private void SaveIcon(Texture2D image, string name)
         {
             byte[] bytes = image.EncodeToPNG();
             Object.DestroyImmediate(image);
@@ -46,7 +57,6 @@ namespace IconsCreationTool.Editor.Core
             textureImporter.mipmapEnabled = false;
 
             textureImporter.SaveAndReimport();
-            AssetDatabase.Refresh();
 
             EditorGUIUtility.PingObject(textureImporter);
         }
