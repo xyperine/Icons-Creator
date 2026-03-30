@@ -18,7 +18,7 @@
 ## About :information_source:
 
 > [!NOTE]
-> The project is not actively supported. However, when (and if) I have time for it, I will update it.
+> I am not actively working on this project. However, sometimes I do some updates when I want and when I can.
 
 This tool can create icons of any 3D object imported in Unity: prefabs, models, and objects on the opened scenes. Also you can make icons out of entire folders containing 3D objects.
 
