@@ -71,7 +71,7 @@ If you are using URP, please make sure the depth texture is enabled.
 
 ### Install
 
-1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.2.3)
+1. Download the .unitypackage file from the [latest release](https://github.com/xyperine/Icons-Creator/releases/tag/v0.3.0)
 2. [Import](https://docs.unity3d.com/Manual/AssetPackagesImport.html) it in Unity
 
 ## Future :crystal_ball:
