@@ -1,5 +1,11 @@
 # Icons Creator 0.3.0
 
+[![Version](https://img.shields.io/badge/version-0.3.0-blue?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/releases/tag/v0.3.0)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/blob/main/LICENSE)
+[![Status](https://img.shields.io/badge/status-maintained-yellow?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/commits/main/)
+[![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)](https://unity.com)
+[![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)](https://dotnet.microsoft.com/en-us/languages/csharp)
+
 ## Table of contents
 * [About :information_source:](#about-information_source)
 * [Features :star2:](#features-star2)
@@ -18,11 +24,12 @@
 ## About :information_source:
 
 > [!NOTE]
-> I am not actively working on this project. However, sometimes I do some updates when I want and when I can.
+> ### Maintenance policy
+> I am not actively working on this project. Sometimes I release updates in my spare time, especially when compatibility issues or serious bugs arise.
 
 This tool can create icons of any 3D object imported in Unity: prefabs, models, and objects on the opened scenes. Also you can make icons out of entire folders containing 3D objects.
 
-I did this tool to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I am working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
+I did this tool to learn more about tooling and editor coding. It is based on a tool that I originally created for a game I was working on, but it was quite limited and required a lot of manual work to do to create icons. So I took the initial version of the tool, improved it, removed any external dependencies, and decided to make it public.
 
 Hope you'll find this tool useful! :purple_heart:
 
@@ -43,7 +50,7 @@ Here are some examples with different backgrounds:
 
 Ambulance (none) | Blaster (none)  | Chair (color)    | Hot dog (color)  | House (texture)    | Turret (texture) 
 :---------:|:--------:|:--------:|:--------:|:--------:|:--------:
-![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![alt text](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
+![Ambulance (none)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Ambulance_Icon.png?raw=true)|![Blaster (none)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Blaster_Icon.png?raw=true)|![Chair (color)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Chair_Icon.png?raw=true)|![Hot dog (color)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Hot_Dog_Icon.png?raw=true)|![House (texture)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/House_Icon.png?raw=true)|![Turret (texture)](https://github.com/xyperine/Icons-Creator/blob/main/Assets/Plugins/IconsCreator/Samples/Textures/Icons/Turret_Icon.png?raw=true)
 
 ## Getting started :rocket:
 
@@ -55,11 +62,11 @@ Unity 6.0+
 
 #### Rendering
 
-| Render Pipeline &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	| Compatible 					|
-| :----------- 			| :-----------: 			|
-| Built-In    			| :white_check_mark: 	|
-| Universal   			| :white_check_mark: 	|
-| High Defenition   | :x: 								|
+| Render Pipeline &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  | Compatible          |
+| :-----------      | :-----------:       |
+| Built-In          | :white_check_mark:  |
+| Universal         | :white_check_mark:  |
+| High Defenition   | :x:                 |
 
 If you are using URP, please make sure the depth texture is enabled.
 
@@ -76,8 +83,7 @@ If you are using URP, please make sure the depth texture is enabled.
 
 ## Future :crystal_ball:
 
-I'm not sure if I will be working on this tool anymore. If I will, I am going to do some QoL updates, improve code, optimize it, and add some or all of the following features:
-
+I will occassionaly make bug fixes, compatibility updates, and QoL updates. Most likely, there will be no new features, but I could add:
 - Alpha mask
 - Perspective camera projection
 - Object material
