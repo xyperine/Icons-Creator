@@ -123,7 +123,7 @@ I made some tests to make sure that the assets the tool is generating are meetin
 Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
 
 ## Support :gift_heart:
-Enjoying the tool? Consider giving it a :star:!
+Enjoying this tool? Consider giving it a :star:!
 
 Check out my other projects:
 - [Conifer Init :gear::evergreen_tree:](https://github.com/xyperine/Conifer-Init) - Unity plugin for automating project setup  
