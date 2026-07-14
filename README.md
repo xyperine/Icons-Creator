@@ -20,6 +20,7 @@
 * [For developers :wrench:](#for-developers-wrench)
   * [Documentation](#documentation)
   * [Testing](#testing)
+* [Support :gift_heart:](#support-gift_heart)
 
 ## About :information_source:
 
@@ -120,3 +121,10 @@ Core processes:
 I made some tests to make sure that the assets the tool is generating are meeting certain requirements. The tests don't cover content validity of the generated icons.
 
 Before you run tests make sure `Icons_Creation` scene is present and if you accidently modified it - delete the scene, then reopen the tool window and the scene will be automatically regenerated.
+
+## Support :gift_heart:
+Enjoying the tool? Consider giving it a :star:!
+
+Check out my other projects:
+- [Conifer Init :gear::evergreen_tree:](https://github.com/xyperine/Conifer-Init) - Unity plugin for automating project setup  
+- [Games :video_game:](https://xyperine.itch.io/)
