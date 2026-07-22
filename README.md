@@ -1,10 +1,10 @@
 # Icons Creator 0.3.0
 
 [![Version](https://img.shields.io/badge/version-0.3.0-blue?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/releases/tag/v0.3.0)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/blob/main/LICENSE)
 [![Status](https://img.shields.io/badge/status-maintained-yellow?style=for-the-badge)](https://github.com/xyperine/Icons-Creator/commits/main/)
 [![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)](https://unity.com)
-[![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)](https://dotnet.microsoft.com/en-us/languages/csharp)
+[![C#](https://img.shields.io/badge/C%23-9179E4?style=for-the-badge&logo=csharp&logoColor=white)](https://dotnet.microsoft.com/en-us/languages/csharp)
 
 ## Table of contents
 * [About :information_source:](#about-information_source)
